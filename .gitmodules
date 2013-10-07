@@ -1,0 +1,3 @@
+[submodule "droiuby"]
+	path = droiuby
+	url = git@github.com:jedld/droiuby.git
