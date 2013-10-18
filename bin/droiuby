@@ -2,11 +2,13 @@
 
 require "droiuby"
 
-command = ARGV[1]
+command = ARGV[0]
 
 case command
   when 'new'
-    project_name = ARGV[2]
+    project_name = ARGV[1]
     project = Project.new
     project.create(project_name)
+  when 'live'
+
 end

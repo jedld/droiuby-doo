@@ -1,1 +1,1 @@
-require 'droiuby/project.thor'
+require 'droiuby/project'
