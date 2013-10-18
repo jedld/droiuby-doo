@@ -1,0 +1,1 @@
+require 'droiuby/project.thor'

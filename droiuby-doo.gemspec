@@ -6,8 +6,16 @@ Gem::Specification.new do |s|
   s.description = "Android development using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
   s.email       = 'joseph.dayo@gmail.com'
-  s.files       = ["lib/droiuby.rb"]
+  s.executables << 'droiuby'
+  s.files       = ["lib/droiuby.rb","lib/droiuby/project.thor"]
   s.homepage    =
     'http://rubygems.org/gems/droiuby-doo'
   s.license       = 'MIT'
+  s.add_runtime_dependency "rake", [">= 0"]
+  s.add_runtime_dependency "rspec" , [">= 0"]
+  s.add_runtime_dependency "thor", [">= 0"]
+  s.add_runtime_dependency "rubyzip", [">= 0"]
+  s.add_runtime_dependency "multipart-post", [">= 0"]
+  s.add_runtime_dependency "properties-ruby", [">= 0"]
+  s.add_runtime_dependency "activesupport", [">= 0"]
 end
