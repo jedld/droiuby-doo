@@ -6,9 +6,31 @@ command = ARGV[0]
 
 case command
   when 'new'
+    if ARGV.size < 2
+      puts "usage: "
+      puts "droiuby new [project name]"
+      return
+    end  
     project_name = ARGV[1]
     project = Project.new
-    project.create(project_name)
+    project.create(project_name,'')
   when 'live'
-
+    project_name = nil
+    if ARGV.size == 3
+      project_name = ARGV[1]
+      device_ip = ARGV[2]
+    elsif ARGV.size == 2
+      device_ip = ARGV[1]
+    else
+      puts "usage: "
+      puts "droiuby live [device IP]"
+      puts "droiuby live [folder] [device IP]"
+      return
+    end
+    project = Project.new
+    project.live(project_name, device_ip, nil, '')
+  else
+    puts "invalid command"
+    puts "Should be:"
+    puts "    droiuby [new|live]"
 end
