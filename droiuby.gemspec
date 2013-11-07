@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = "Android development using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
   s.email       = 'joseph.dayo@gmail.com'
-  s.executables << 'droiuby'
+  s.executables << 'drby'
   s.files       = ["lib/droiuby.rb","lib/droiuby/project.rb"] + Dir.glob("lib/droiuby/templates/**/*")
   s.homepage    =
     'http://rubygems.org/gems/droiuby'
