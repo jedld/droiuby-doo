@@ -7,13 +7,42 @@ command = ARGV[0]
 case command
   when 'new'
     if ARGV.size < 2
+      puts "Create a new droiuby app"
       puts "usage: "
-      puts "droiuby new [project name]"
-      return
+      puts "drby new [project name]"
+      exit(1)
     end  
     project_name = ARGV[1]
     project = Project.new
     project.create(project_name,'')
+  when 'pack'
+    project_name = nil
+    if ARGV.size == 2
+      project_name = ARGV[1]
+    else
+      if !File.exists?('config.droiuby')
+         puts 'current directory is not a valid droiuby project'
+         exit(1)
+      end
+    end
+    project = Project.new
+    project.package(project_name) 
+  when 'gopack'
+    project_name = nil
+    if ARGV.size == 3
+      project_name = ARGV[1]
+      device_ip = ARGV[2]
+    elsif ARGV.size == 2
+      device_ip = ARGV[1]
+    else
+      puts "zips and uploads app to device"
+      puts "usage: "
+      puts "drby gopack [device IP]"
+      puts "drby gopack [folder] [device IP]"
+      exit(1)
+    end
+    project = Project.new
+    project.execute(project_name, device_ip, '') 
   when 'live'
     project_name = nil
     if ARGV.size == 3
@@ -22,9 +51,10 @@ case command
     elsif ARGV.size == 2
       device_ip = ARGV[1]
     else
+      puts "starts a live web server and point droiuby to it"
       puts "usage: "
-      puts "droiuby live [device IP]"
-      puts "droiuby live [folder] [device IP]"
+      puts "drby live [device IP]"
+      puts "drby live [folder] [device IP]"
       exit(1)
     end
     project = Project.new
@@ -32,5 +62,5 @@ case command
   else
     puts "invalid command"
     puts "Should be:"
-    puts "    droiuby [new|live]"
+    puts "    drby [new|live|gopack|pack]"
 end
