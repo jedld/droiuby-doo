@@ -25,7 +25,7 @@ case command
       puts "usage: "
       puts "droiuby live [device IP]"
       puts "droiuby live [folder] [device IP]"
-      return
+      exit(1)
     end
     project = Project.new
     project.live(project_name, device_ip, nil, '')
