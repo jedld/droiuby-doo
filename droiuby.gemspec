@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.0.1'
-  s.date        = '2013-10-07'
+  s.version     = '0.0.2'
+  s.date        = '2013-11-15'
   s.summary     = "Droiuby GEM"
   s.description = "Android development using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
     'http://rubygems.org/gems/droiuby'
   s.license       = 'MIT'
   s.add_runtime_dependency "rake", [">= 0"]
-  s.add_runtime_dependency "rspec" , [">= 0"]
   s.add_runtime_dependency "thor", [">= 0"]
   s.add_runtime_dependency "rubyzip", [">= 1.0.0"]
   s.add_runtime_dependency "multipart-post", [">= 0"]
