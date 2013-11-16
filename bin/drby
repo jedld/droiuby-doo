@@ -37,12 +37,14 @@ case command
     else
       puts "zips and uploads app to device"
       puts "usage: "
-      puts "drby gopack [device IP]"
+      puts "drby gopack [device IP] "
       puts "drby gopack [folder] [device IP]"
       exit(1)
     end
+    
+    
     project = Project.new
-    project.execute(project_name, device_ip, '') 
+    project.execute(project_name, device_ip, ENV['DROIUBY_HOST']) 
   when 'live'
     project_name = nil
     if ARGV.size == 3
@@ -58,7 +60,7 @@ case command
       exit(1)
     end
     project = Project.new
-    project.live(project_name, device_ip, nil, '')
+    project.live(project_name, device_ip, ENV['DROIUBY_HOST'], '')
   else
     puts "invalid command"
     puts "Should be:"
