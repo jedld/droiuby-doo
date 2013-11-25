@@ -34,6 +34,8 @@ case command
       device_ip = ARGV[2]
     elsif ARGV.size == 2
       device_ip = ARGV[1]
+    elsif ARGV.size == 1
+      device_ip = nil
     else
       puts "zips and uploads app to device"
       puts "usage: "
@@ -44,7 +46,8 @@ case command
     
     
     project = Project.new
-    project.execute(project_name, device_ip, ENV['DROIUBY_HOST']) 
+    droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
+    project.execute(project_name, device_ip, droiuby_host) 
   when 'live'
     project_name = nil
     if ARGV.size == 3
@@ -52,6 +55,8 @@ case command
       device_ip = ARGV[2]
     elsif ARGV.size == 2
       device_ip = ARGV[1]
+    elsif ARGV.size == 1
+      device_ip = nil
     else
       puts "starts a live web server and point droiuby to it"
       puts "usage: "
@@ -60,7 +65,8 @@ case command
       exit(1)
     end
     project = Project.new
-    project.live(project_name, device_ip, ENV['DROIUBY_HOST'], '')
+    droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
+    project.live(project_name, device_ip, droiuby_host, '')
   else
     puts "invalid command"
     puts "Should be:"
