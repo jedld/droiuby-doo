@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.0.6'
+  s.version     = '0.0.8'
   s.date        = '2013-11-28'
   s.summary     = "Droiuby GEM"
   s.description = "Android development using ruby"
@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.executables << 'drby'
   s.files       = ["lib/droiuby.rb","lib/droiuby/project.rb"] + Dir.glob("lib/droiuby/templates/**/*")
   s.homepage    =
-    'http://rubygems.org/gems/droiuby'
+    'https://github.com/jedld/droiuby-doo'
   s.license       = 'MIT'
   s.add_runtime_dependency "rake", [">= 0"]
   s.add_runtime_dependency "thor", [">= 0"]
@@ -21,5 +21,7 @@ Gem::Specification.new do |s|
      "2. Download the android sdk (http://developer.android.com/sdk/index.html)\n" +
      "3. Setup your PATH to include <sdk directory>/sdk/platform-tools (make sure adb works)\n" +
      "4. Attach your android phone to your PC via USB\n" +
-     "5. visit https://github.com/jedld/droiuby-doo for the quick start tutorial\n"
+     "5. visit https://github.com/jedld/droiuby-doo for the quick start tutorial\n" +
+     "\nDetails can be found in the README"
+     
 end
