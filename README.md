@@ -64,7 +64,7 @@ You can obtain your comptuer's IP address using ifconfig (if running on linux)
 
 2. Package and Execute the app. At this point make sure droiuby is running on your phone.
 
-    DROIUBY_HOST=<your computer's IP address> drby gopack <Your phone's IP address>
+    DROIUBY_HOST=[your computer's IP address] drby gopack [Your phone's IP address]
 
 3. If all goes well you should see the "hello world" app on your phone.
 
