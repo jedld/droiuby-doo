@@ -27,6 +27,12 @@ case command
     end
     project = Project.new
     project.package(project_name) 
+  when 'framework'
+    if ARGV[1] == 'update'
+        project = Project.new
+        project.framework(nil, ARGV[2])
+        exit(1)
+    end
   when 'gopack'
     project_name = nil
     if ARGV.size == 3
