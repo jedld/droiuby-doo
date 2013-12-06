@@ -38,14 +38,10 @@ This tutorial assumes you have installed the Android SDK and attached your andro
 
 Create a new project
 
-Example:
-
     ~ $ drby new hello_world
     ~ $ cd hello_world
 
 Package and Execute the app. At this point make sure your phone is connected to your computer via the usb cable.
-
-Example:
 
     ~ $ drby gopack
 
@@ -68,7 +64,12 @@ Create a new project (same as above)
 
 Package and Execute the app. At this point make sure droiuby is running on your phone.
 
-    ~ $ drby gopack -d [Your phone's IP address] -h [your computer's IP address]
+    drby gopack -d [Your phone's IP address]
+    
+Example
+
+    cd my_awesome_app
+    drby gopack -d 192.168.1.3
 
 If all goes well you should see the "hello world" app on your phone.
 
@@ -94,6 +95,19 @@ Either that or you can specify your phones IP address (e.g. 192.168.1.2):
     ~ $ drby console -d 192.168.1.2
 
 Make sure droiuby is running when you do this.
+
+Testing on the Emulator
+=======================
+
+In order to test on the Android Emulator, you need to be able to install the droiuby app.
+
+Get a hold of the droiuby APK. You may do this by getting the compiled binary from git@github.com:jedld/droiuby.git or building droiuby yourself (refer to the "customization" docs)
+
+First, make sure the emulator is running and then do a "adb install"
+
+    adb install droiuby.apk
+    
+The emulator should work as if it was a phone connected via usb and the drby commands should work fine.
 
 Logs
 ====
