@@ -1,23 +1,102 @@
 #!/usr/bin/env ruby
 
+
 require "droiuby"
+require 'optparse'
+require 'ripper'
+require "readline"
+
+$droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
+$device_ip = ENV['DROIUBY_DEVICE'] || nil
+
+options = OptionParser.new do |o|
+  o.banner = 
+"Usage: drby autostart true|false INSTANCE_NAME [options] # Set specified instance to start on droiuby launch
+       drby console [options]                            # Launch an interactive console to the target Android Device running Droiuby
+       drby framework update  [FOLDER] [options]         # updates the droiuby framework from folder (default src_framework)
+       drby gopack [PROJECT_NAME] [options]              # packages an app and uploads to an Android Device running Droiuby
+       drby list [options]                               # Lists the app instances running on the phone
+       drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
+       drby new PROJECT_NAME [options]                   # Create a new project 
+       drby pack [PROJECT_NAME] [options]                # zips and packages an app
+       drby switch INSTANCE_NAME [options]               # Switch to the specified instance\n"
+
+  o.separator ""
+  o.separator "options:"
+  o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
+  o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
+  o.parse!
+end
 
 command = ARGV[0]
 
+def valid_statement?(stmt)
+  begin
+    catch(:x) { eval("throw :x; #{stmt}") }
+  rescue SyntaxError=>e
+    return false
+  end
+  return true
+end
+
 case command
   when 'new'
-    if ARGV.size < 2
-      puts "Create a new droiuby app"
-      puts "usage: "
-      puts "drby new [project name]"
-      exit(1)
-    end  
     project_name = ARGV[1]
+
+    if project_name.blank?
+        puts "PROJECT_NAME is required"
+        puts "Usage: drby new PROJECT_NAME [options]"
+        exit(1)
+    end
+
     project = Project.new
     project.create(project_name,'')
+  when 'console'
+    puts "droiuby console"
+    project = Project.new
+    while buf = Readline.readline("> ", true)
+
+      exit(1) if buf=='exit' || buf=='quit'
+
+      begin
+          while !Ripper.sexp(buf) || !valid_statement?(buf)
+              buf = buf + "\n" + Readline.readline("?> ", true) + "\n"
+          end
+      rescue Interrupt
+        puts "\n"
+        next
+      end
+      res = JSON.parse(project.command(buf, $device_ip))
+      puts res['result']
+    end
+  when 'list'
+    project = Project.new
+    project.list($device_ip)
+  when 'switch'
+    instance_name = nil
+    unless ARGV[1].blank?
+      instance_name  = ARGV[1]
+    else
+      puts "instance name required."
+      puts 'To get a list of instances you may:'
+      puts "drby list"
+      puts "     "
+      puts "Usage: drby switch INSTANCE_NAME"
+      exit(1)
+    end
+    project = Project.new
+    project.switch(instance_name, $device_ip)
+  when 'autostart' 
+    switch = ARGV[1]
+    if switch.blank?
+      puts "Usage: drby autostart true|false [NAMESPACE] [options]"
+      exit(1)
+    end
+    project = Project.new
+    project.autostart(switch, ARGV[2], $device_ip) 
   when 'pack'
     project_name = nil
-    if ARGV.size == 2
+    unless ARGV[1].blank?
       project_name = ARGV[1]
     else
       if !File.exists?('config.droiuby')
@@ -35,46 +114,22 @@ case command
     end
   when 'gopack'
     project_name = nil
-    if ARGV.size == 3
+
+    unless ARGV[1].blank?
       project_name = ARGV[1]
-      device_ip = ARGV[2]
-    elsif ARGV.size == 2
-      device_ip = ARGV[1]
-    elsif ARGV.size == 1
-      device_ip = nil
-    else
-      puts "zips and uploads app to device"
-      puts "usage: "
-      puts "drby gopack [device IP] "
-      puts "drby gopack [folder] [device IP]"
-      exit(1)
     end
     
-    
     project = Project.new
-    droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
-    project.execute(project_name, device_ip, droiuby_host) 
+    project.execute(project_name, $device_ip, $droiuby_host) 
   when 'live'
     project_name = nil
-    if ARGV.size == 3
+
+    if ARGV[1]
       project_name = ARGV[1]
-      device_ip = ARGV[2]
-    elsif ARGV.size == 2
-      device_ip = ARGV[1]
-    elsif ARGV.size == 1
-      device_ip = nil
-    else
-      puts "starts a live web server and point droiuby to it"
-      puts "usage: "
-      puts "drby live [device IP]"
-      puts "drby live [folder] [device IP]"
-      exit(1)
     end
+
     project = Project.new
-    droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
-    project.live(project_name, device_ip, droiuby_host, '')
+    project.live(project_name, $device_ip, $droiuby_host, '')
   else
-    puts "invalid command"
-    puts "Should be:"
-    puts "    drby [new|live|gopack|pack]"
+    puts options
 end
