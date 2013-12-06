@@ -1,16 +1,16 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.0.10'
+  s.version     = '0.1'
   s.date        = '2013-12-06'
   s.summary     = "Droiuby GEM"
-  s.description = "Android development using ruby"
+  s.description = "Android development and rapid prototyping using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
   s.email       = 'joseph.dayo@gmail.com'
   s.executables << 'drby'
   s.files       = ["lib/droiuby.rb","lib/droiuby/project.rb"] + Dir.glob("lib/droiuby/templates/**/*")
   s.homepage    =
     'https://github.com/jedld/droiuby-doo'
-  s.license       = 'MIT'
+  s.license       = 'Apache License, Version 2.0'
   s.add_runtime_dependency "rake", [">= 0"]
   s.add_runtime_dependency "thor", [">= 0"]
   s.add_runtime_dependency "rubyzip", [">= 1.0.0"]
