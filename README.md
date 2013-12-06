@@ -45,7 +45,7 @@ This tutorial assumes you have installed the Android SDK and attached your andro
 
     drby gopack
 
-3. If successful, droiuby should boot and load your "hello world" app. If it does not you may attempt to run droiuby manually from your phone and then repeat step 2.
+3. If successful, droiuby should boot and load your "hello world" app. If it does not, you may attempt to run droiuby manually from your phone and then repeat step 2.
 
 Testing without the Android SDK
 ===============================
@@ -67,6 +67,28 @@ You can obtain your comptuer's IP address using ifconfig (if running on linux)
     DROIUBY_HOST=[your computer's IP address] drby gopack [Your phone's IP address]
 
 3. If all goes well you should see the "hello world" app on your phone.
+
+Access to the console
+=====================
+
+Make sure your phone is connected and the Droiuby App is running. Console access can be had by:
+
+    drby console
+
+It should launch an irb like interface. ruby code here will run under the current app context inside the Droiuby application.
+
+If you don't have the android sdk installed (thus no adb command) you may bring up the browser console:
+
+    http://<your phone's IP address>:4000
+
+Make sure droiuby is running when you do this.
+
+Logs
+====
+
+Errors and such should show up inside logcat. Make sure you have the android sdk installed
+
+    adb logcat
 
 Documentation on the Droiuby Framework
 ======================================
