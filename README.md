@@ -36,20 +36,20 @@ Quick Start Tutorial
 
 This tutorial assumes you have installed the Android SDK and attached your android phone to the computer. This should also work on the android emulator but you must install the droiuby application on the emulator manually.
 
-1.  Create a new project
+Create a new project
 
 Example:
 
     ~ $ drby new hello_world
     ~ $ cd hello_world
 
-2.  Package and Execute the app. At this point make sure your phone is connected to your computer via the usb cable.
+Package and Execute the app. At this point make sure your phone is connected to your computer via the usb cable.
 
 Example:
 
     ~ $ drby gopack
 
-3. If successful, droiuby should boot and load your "hello world" app. If it does not, you may attempt to run droiuby manually from your phone and then repeat step 2.
+If successful, droiuby should boot and load your "hello world" app. If it does not, you may attempt to run droiuby manually from your phone and then repeat the previous step.
 
 Testing without the Android SDK
 ===============================
@@ -64,13 +64,13 @@ Things you need:
 You should be able to retrieve your phone's IP address by running the droiuby app. It will display the detected IP address on the app (under the run button).
 You can obtain your comptuer's IP address using ifconfig (if running on linux)
 
-1. Create a new project (same as above)
+Create a new project (same as above)
 
-2. Package and Execute the app. At this point make sure droiuby is running on your phone.
+Package and Execute the app. At this point make sure droiuby is running on your phone.
 
     ~ $ drby gopack -d [Your phone's IP address] -h [your computer's IP address]
 
-3. If all goes well you should see the "hello world" app on your phone.
+If all goes well you should see the "hello world" app on your phone.
 
 Note:
 
