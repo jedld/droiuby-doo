@@ -38,10 +38,14 @@ This tutorial assumes you have installed the Android SDK and attached your andro
 
 1.  Create a new project
 
+Example:
+
     ~ $ drby new hello_world
     ~ $ cd hello_world
 
 2.  Package and Execute the app. At this point make sure your phone is connected to your computer via the usb cable.
+
+Example:
 
     ~ $ drby gopack
 

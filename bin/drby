@@ -54,8 +54,13 @@ case command
   when 'console'
     puts "droiuby console"
     project = Project.new
+
     while buf = Readline.readline("droiuby >  ", true)
 
+      if buf=='refresh!'
+        project.reload($device_ip)
+        next
+      end
       exit(1) if buf=='exit' || buf=='quit'
 
       begin
