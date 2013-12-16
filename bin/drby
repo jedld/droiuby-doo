@@ -19,7 +19,8 @@ options = OptionParser.new do |o|
        drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                   # Create a new project 
        drby pack [PROJECT_NAME] [options]                # zips and packages an app
-       drby switch INSTANCE_NAME [options]               # Switch to the specified instance\n"
+       drby switch INSTANCE_NAME [options]               # Switch to the specified instance
+       drby bundle                                       # unzips all gems in vendor/cache for deployment to droiuby\n"
 
   o.separator ""
   o.separator "options:"
