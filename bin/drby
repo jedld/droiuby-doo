@@ -39,6 +39,8 @@ def valid_statement?(stmt)
   return true
 end
 
+project = Project.new
+
 case command
   when 'new'
     project_name = ARGV[1]
@@ -48,13 +50,9 @@ case command
         puts "Usage: drby new PROJECT_NAME [options]"
         exit(1)
     end
-
-    project = Project.new
     project.create(project_name,'')
   when 'console'
     puts "droiuby console"
-    project = Project.new
-
     while buf = Readline.readline("droiuby >  ", true)
 
       if buf=='refresh!'
@@ -90,7 +88,6 @@ case command
       puts "Usage: drby switch INSTANCE_NAME"
       exit(1)
     end
-    project = Project.new
     project.switch(instance_name, $device_ip)
   when 'autostart' 
     switch = ARGV[1]
@@ -98,7 +95,6 @@ case command
       puts "Usage: drby autostart true|false [NAMESPACE] [options]"
       exit(1)
     end
-    project = Project.new
     project.autostart(switch, ARGV[2], $device_ip) 
   when 'pack'
     project_name = nil
@@ -110,7 +106,6 @@ case command
          exit(1)
       end
     end
-    project = Project.new
     project.package(project_name) 
   when 'framework'
     if ARGV[1] == 'update'
@@ -125,8 +120,9 @@ case command
       project_name = ARGV[1]
     end
     
-    project = Project.new
     project.execute(project_name, $device_ip, $droiuby_host) 
+  when 'bundle'
+    project.bundle
   when 'live'
     project_name = nil
 
@@ -134,7 +130,6 @@ case command
       project_name = ARGV[1]
     end
 
-    project = Project.new
     project.live(project_name, $device_ip, $droiuby_host, '')
   else
     puts options
