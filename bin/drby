@@ -93,7 +93,7 @@ case command
   when 'autostart' 
     switch = ARGV[1]
     if switch.blank?
-      puts "Usage: drby autostart true|false [NAMESPACE] [options]"
+      puts "Usage: drby autostart on|off [NAMESPACE] [options]"
       exit(1)
     end
     project.autostart(switch, ARGV[2], $device_ip) 
