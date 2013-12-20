@@ -18,7 +18,7 @@ Pre installation requirements
   The Android SDK is high recommended but optional, however you may need to perform extra steps in order to test your app.
   See section on "testing without the Android SDK".
 
-* Phone with Android 4.0+ (Make sure you enable "developer mode", this can be different depending on your phone's vendor so just google it), Alternatively you may just use the Emulator if you already have the Android SDK download.
+* Phone with Android 4.0+ (Make sure you enable "developer mode", this can be different depending on your phone's vendor so just google it), Alternatively you may just use the Emulator if you already have the Android SDK downloaded.
 
 Installation
 ============
