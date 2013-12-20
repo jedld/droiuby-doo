@@ -19,6 +19,7 @@ options = OptionParser.new do |o|
        drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                   # Create a new project 
        drby pack [PROJECT_NAME] [options]                # zips and packages an app
+       drby reload                                       # uploads and then reload the current app
        drby switch INSTANCE_NAME [options]               # Switch to the specified instance
        drby bundle                                       # unzips all gems in vendor/cache for deployment to droiuby\n"
 
@@ -52,11 +53,18 @@ case command
         exit(1)
     end
     project.create(project_name,'')
+  when 'reload'
+    project_name = ARGV[1]
+    project.package(project_name, nil, true)
+    project.upload(project_name, $device_ip, nil, false, false)
+    project.reload($device_ip)
   when 'console'
     puts "droiuby console"
     while buf = Readline.readline("droiuby >  ", true)
 
-      if buf=='refresh!'
+      Readline::HISTORY.pop if /^\s*$/ =~ buf
+
+      if ( buf=='refresh!' || buf=='reload!')
         project.reload($device_ip)
         next
       end
@@ -75,7 +83,6 @@ case command
       puts res['result']
     end
   when 'list'
-    project = Project.new
     project.list($device_ip)
   when 'switch'
     instance_name = nil
