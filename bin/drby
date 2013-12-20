@@ -68,6 +68,12 @@ case command
         project.reload($device_ip)
         next
       end
+
+      if (buf == 'clear')
+        system "clear" unless system "cls"
+        next
+      end
+
       exit(1) if buf=='exit' || buf=='quit'
 
       begin
