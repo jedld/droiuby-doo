@@ -19,7 +19,9 @@ options = OptionParser.new do |o|
        drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                   # Create a new project 
        drby pack [PROJECT_NAME] [options]                # zips and packages an app
-       drby switch INSTANCE_NAME [options]               # Switch to the specified instance\n"
+       drby reload                                       # uploads and then reload the current app
+       drby switch INSTANCE_NAME [options]               # Switch to the specified instance
+       drby bundle                                       # unzips all gems in vendor/cache for deployment to droiuby\n"
 
   o.separator ""
   o.separator "options:"
@@ -39,6 +41,8 @@ def valid_statement?(stmt)
   return true
 end
 
+project = Project.new
+
 case command
   when 'new'
     project_name = ARGV[1]
@@ -48,19 +52,28 @@ case command
         puts "Usage: drby new PROJECT_NAME [options]"
         exit(1)
     end
-
-    project = Project.new
     project.create(project_name,'')
+  when 'reload'
+    project_name = ARGV[1]
+    project.package(project_name, nil, true)
+    project.upload(project_name, $device_ip, nil, false, false)
+    project.reload($device_ip)
   when 'console'
     puts "droiuby console"
-    project = Project.new
-
     while buf = Readline.readline("droiuby >  ", true)
 
-      if buf=='refresh!'
+      Readline::HISTORY.pop if /^\s*$/ =~ buf
+
+      if ( buf=='refresh!' || buf=='reload!')
         project.reload($device_ip)
         next
       end
+
+      if (buf == 'clear')
+        system "clear" unless system "cls"
+        next
+      end
+
       exit(1) if buf=='exit' || buf=='quit'
 
       begin
@@ -76,7 +89,6 @@ case command
       puts res['result']
     end
   when 'list'
-    project = Project.new
     project.list($device_ip)
   when 'switch'
     instance_name = nil
@@ -90,15 +102,13 @@ case command
       puts "Usage: drby switch INSTANCE_NAME"
       exit(1)
     end
-    project = Project.new
     project.switch(instance_name, $device_ip)
   when 'autostart' 
     switch = ARGV[1]
     if switch.blank?
-      puts "Usage: drby autostart true|false [NAMESPACE] [options]"
+      puts "Usage: drby autostart on|off [NAMESPACE] [options]"
       exit(1)
     end
-    project = Project.new
     project.autostart(switch, ARGV[2], $device_ip) 
   when 'pack'
     project_name = nil
@@ -110,7 +120,6 @@ case command
          exit(1)
       end
     end
-    project = Project.new
     project.package(project_name) 
   when 'framework'
     if ARGV[1] == 'update'
@@ -125,8 +134,9 @@ case command
       project_name = ARGV[1]
     end
     
-    project = Project.new
     project.execute(project_name, $device_ip, $droiuby_host) 
+  when 'bundle'
+    project.bundle
   when 'live'
     project_name = nil
 
@@ -134,7 +144,6 @@ case command
       project_name = ARGV[1]
     end
 
-    project = Project.new
     project.live(project_name, $device_ip, $droiuby_host, '')
   else
     puts options

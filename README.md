@@ -13,10 +13,16 @@ Pre installation requirements
   Grab the Android SDK (http://developer.android.com/sdk/index.html) and set it up.
   Make sure <sdk>/tools and <sdk>/platform-tools are in your path
 
+<<<<<<< HEAD
   To make sure that the android tools is properly installed make sure that the "adb" tool works in the commandline.
+=======
+  To make sure that the android tools is properly installed, make sure that the "adb" works in the commandline.
+>>>>>>> 95e9d98f22503b59fd266cc8314736785ccb031a
   
-  The Android SDK is optional but you may need to perform extra steps in order to test your app.
+  The Android SDK is high recommended but optional, however you may need to perform extra steps in order to test your app.
   See section on "testing without the Android SDK".
+
+* Phone with Android 4.0+ (Make sure you enable "developer mode", this can be different depending on your phone's vendor so just google it), Alternatively you may just use the Emulator if you already have the Android SDK downloaded.
 
 Installation
 ============
@@ -80,7 +86,7 @@ You can also set the DROIUBY_HOST and DROIUBY_DEVICE environment variables.
 Access to the console
 =====================
 
-Make sure your phone is connected and the Droiuby App is running. Console access can be had by:
+Make sure your phone is connected (via usb) and the Droiuby App is running. Console access can be had by:
 
     ~ $ drby console
 
@@ -96,6 +102,11 @@ Either that or you can specify your phones IP address (e.g. 192.168.1.2):
 
 Make sure droiuby is running when you do this.
 
+Logging
+=======
+
+
+
 Testing on the Emulator
 =======================
 
@@ -108,6 +119,13 @@ First, make sure the emulator is running and then do a "adb install"
     adb install droiuby.apk
     
 The emulator should work as if it was a phone connected via usb and the drby commands should work fine.
+
+Sample Applications
+===================
+
+Sample apps can be found here:
+
+    git@github.com:jedld/droiuby_smples.git
 
 Logs
 ====
