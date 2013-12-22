@@ -13,7 +13,7 @@ Pre installation requirements
   Grab the Android SDK (http://developer.android.com/sdk/index.html) and set it up.
   Make sure <sdk>/tools and <sdk>/platform-tools are in your path
 
-  To make sure that the android tools is properly installed make sure that the "adb" works in the commandline.
+  To make sure that the android tools is properly installed make sure that the "adb" tool works in the commandline.
   
   The Android SDK is optional but you may need to perform extra steps in order to test your app.
   See section on "testing without the Android SDK".
@@ -114,7 +114,7 @@ Logs
 
 Errors and such should show up inside logcat. Make sure you have the android sdk installed
 
-    adb logcat
+    adb logcat | grep com.droiuby
 
 Documentation on the Droiuby Framework
 ======================================
