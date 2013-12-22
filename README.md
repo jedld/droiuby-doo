@@ -13,12 +13,8 @@ Pre installation requirements
   Grab the Android SDK (http://developer.android.com/sdk/index.html) and set it up.
   Make sure <sdk>/tools and <sdk>/platform-tools are in your path
 
-<<<<<<< HEAD
-  To make sure that the android tools is properly installed make sure that the "adb" tool works in the commandline.
-=======
-  To make sure that the android tools is properly installed, make sure that the "adb" works in the commandline.
->>>>>>> 95e9d98f22503b59fd266cc8314736785ccb031a
-  
+  To make sure that android tools is properly installed make sure that the "adb" tool works in the commandline.
+
   The Android SDK is high recommended but optional, however you may need to perform extra steps in order to test your app.
   See section on "testing without the Android SDK".
 
@@ -101,10 +97,6 @@ Either that or you can specify your phones IP address (e.g. 192.168.1.2):
     ~ $ drby console -d 192.168.1.2
 
 Make sure droiuby is running when you do this.
-
-Logging
-=======
-
 
 
 Testing on the Emulator
