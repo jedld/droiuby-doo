@@ -45,7 +45,7 @@ Create a new project
 
 Package and Execute the app. At this point make sure your phone is connected to your computer via the usb cable.
 
-    ~ $ drby gopack
+    ~ $ drby go
 
 If successful, droiuby should boot and load your "hello world" app. If it does not, you may attempt to run droiuby manually from your phone and then repeat the previous step.
 
@@ -71,7 +71,7 @@ Package and Execute the app. At this point make sure droiuby is running on your 
 Example
 
     cd my_awesome_app
-    drby gopack -d 192.168.1.3
+    drby go -d 192.168.1.3
 
 If all goes well you should see the "hello world" app on your phone.
 

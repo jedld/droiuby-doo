@@ -14,7 +14,7 @@ options = OptionParser.new do |o|
 "Usage: drby autostart true|false INSTANCE_NAME [options] # Set specified instance to start on droiuby launch
        drby console [options]                            # Launch an interactive console to the target Android Device running Droiuby
        drby framework update  [FOLDER] [options]         # updates the droiuby framework from folder (default src_framework)
-       drby gopack [PROJECT_NAME] [options]              # packages an app and uploads to an Android Device running Droiuby
+       drby go   [PROJECT_NAME] [options]                # packages an app and uploads to an Android Device running Droiuby
        drby list [options]                               # Lists the app instances running on the phone
        drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                   # Create a new project 
@@ -55,7 +55,7 @@ case command
     project.create(project_name,'')
   when 'reload'
     project_name = ARGV[1]
-    project.package(project_name, nil, true)
+    project.package(project_name, nil, 'true')
     project.upload(project_name, $device_ip, nil, false, false)
     project.reload($device_ip)
   when 'console'
@@ -127,7 +127,7 @@ case command
         project.framework(nil, ARGV[2])
         exit(1)
     end
-  when 'gopack'
+  when 'go'
     project_name = nil
 
     unless ARGV[1].blank?
