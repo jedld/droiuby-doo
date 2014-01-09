@@ -8,7 +8,7 @@ Pre installation requirements
 
 * Ruby 1.9.3 (MRI will do but JRuby is recommended)
 
-* Android SDK
+* Android SDK (Recommended but optional as long as your Android Phone is on wifi)
 
   Grab the Android SDK (http://developer.android.com/sdk/index.html) and set it up.
   Make sure <sdk>/tools and <sdk>/platform-tools are in your path
@@ -54,6 +54,36 @@ Testing without the Android SDK
 
 You should be able to perform steps 1 & 2 of above without the android SDK, however drby will not be able to upload your app automatically. For this to work, drby will try to connect to your phone via your wifi network.
 
+There are two ways to upload your app to your phone, via the Droiuby Web Console or still, via the commandline.
+
+Using the Droiuby Web Console
+-----------------------------
+
+Create a new project (same as above) and cd into it.
+
+Package the app
+
+    drby pack
+    
+This will create a zip file under the build directory, we will upload this zip file later.
+
+On your phone, make sure you have downloaded the droiuby app:
+ 
+    https://play.google.com/store/apps/details?id=com.droiuby.application&hl=en
+
+Run it, and once Droiuby has finished loading, your phone's IP address and the WebConsole port will be displayed on-screen.
+
+Open the web browser on your PC and enter the following URL:
+
+    http://<Your Phone's IP>:4000
+    
+You should see the IRB like interface of the Droiuby Console, there wil be a link to upload your file, click on the link.
+
+Browse and select the zip file that was created by the pack command. This will upload the app to your phone and run it.
+
+Via the commandline
+-------------------
+
 Things you need:
 
 - Your computer's IP address
@@ -66,7 +96,7 @@ Create a new project (same as above)
 
 Package and Execute the app. At this point make sure droiuby is running on your phone.
 
-    drby gopack -d [Your phone's IP address]
+    drby go -d [Your phone's IP address]
     
 Example
 
