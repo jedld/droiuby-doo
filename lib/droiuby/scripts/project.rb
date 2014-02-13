@@ -140,7 +140,9 @@ class Project < Thor
     template File.join('ruby','index.rb.erb'), File.join(dest_folder,"index.rb")
     empty_directory File.join(dest_folder,"lib")
     say "running bundle install"
+    Dir.chdir dest_folder
     `bundle install`
+    bundle
   end
 
   desc "package NAME [WORKSPACE_DIR] [true|false]","package a project"

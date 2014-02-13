@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.1.6'
-  s.date        = '2014-01-07'
+  s.version     = '0.2.0'
+  s.date        = '2014-02-13'
   s.summary     = "Droiuby GEM"
   s.description = "Android development and rapid prototyping using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
   s.email       = 'joseph.dayo@gmail.com'
   s.executables << 'drby'
-  s.files       = ["lib/droiuby.rb","lib/droiuby/**/*"]
+  s.files       = ["lib/droiuby.rb"] +  Dir.glob("lib/droiuby/**/*")
   s.homepage    =
     'https://github.com/jedld/droiuby-doo'
   s.license       = 'Apache License, Version 2.0'
