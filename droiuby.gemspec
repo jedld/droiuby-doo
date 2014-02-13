@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Joseph Emmanuel Dayo"]
   s.email       = 'joseph.dayo@gmail.com'
   s.executables << 'drby'
-  s.files       = ["lib/droiuby.rb","lib/droiuby/project.rb"] + Dir.glob("lib/droiuby/templates/**/*")
+  s.files       = ["lib/droiuby.rb","lib/droiuby/**/*"]
   s.homepage    =
     'https://github.com/jedld/droiuby-doo'
   s.license       = 'Apache License, Version 2.0'

@@ -1,1 +1,1 @@
-require 'droiuby/project'
+require 'droiuby/scripts/project'
