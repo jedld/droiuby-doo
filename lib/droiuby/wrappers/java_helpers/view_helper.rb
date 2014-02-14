@@ -50,9 +50,9 @@ module Droiuby
       
       def java_attr_writer(*symbols)
         symbols.each do |s|
-          java_getter_method = "set#{s.to_s.camelize}".to_sym
-          define_method("#{s}=".to_sym) do
-            native.send(java_getter_method)
+          java_setter_method = "set#{s.to_s.camelize}".to_sym
+          define_method("#{s}=".to_sym) do |value|
+            native.send(java_setter_method, value)
           end
         end
       end
