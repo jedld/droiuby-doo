@@ -75,11 +75,6 @@ def launch(url)
   Java::com.droiuby.client.core.DroiubyLauncher.launch(_current_activity, url)
 end
 
-def start_web_console(&block)
-  listener = Droiuby::Wrappers::Listeners::OnWebConsoleReadyListener.new(_execution_bundle,block)
-  Java::com.droiuby.client.core.DroiubyLauncher.setupConsole(_execution_bundle, listener.to_native)
-end
-
 def set_content_view(view = nil)
   if view.nil?
     Java::com.droiuby.client.core.DroiubyLauncher.setPage(_current_activity, _execution_bundle, _current_page)
