@@ -182,8 +182,11 @@ class Project < Thor
     Thread.new do
       while !ready
       end
-      `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n com.droiuby.application/.DroiubyActivity`
-      launch(device_ip, "http://#{host_name_args}:#{port}/config.droiuby")
+      begin
+        launch(device_ip, "http://#{host_name_args}:#{port}/config.droiuby")
+      rescue Exception=>e
+        `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n com.droiuby.application/.DroiubyActivity`
+      end
     end
 
     puts "Starting server: http://#{host_name_args}:#{port}"
@@ -269,9 +272,7 @@ class Project < Thor
   end
 
   desc "execute NAME DEVICE_IP [WORKSPACE_DIR]","package and execute a droiuby application to target device running droiuby client"
-
   def execute(name, device_ip, source_dir = 'projects')
-    `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n com.droiuby.application/.CanvasActivity`
     package name, source_dir, "true"
     upload name, device_ip, source_dir
   end
