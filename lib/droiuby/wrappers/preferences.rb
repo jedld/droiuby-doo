@@ -33,6 +33,8 @@ class Preferences
         editor.putLong(k,v)
       elsif v.kind_of? Float
         editor.putFloat(k,v)
+      elsif v.boolean?
+        editor.putBoolean(k,v)
       elsif v == :remove
         editor.remove(k)
       end

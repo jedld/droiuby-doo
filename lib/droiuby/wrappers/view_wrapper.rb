@@ -14,6 +14,10 @@ class ViewWrapper
   :padding_left, :padding_top, :padding_right, :padding_bottom
 
   java_attr_reader :id, :width, :height, :measured_with, :measured_height, :background
+  java_attr_writer :selected
+  
+  java_attr_boolean_reader :selected
+  
 
   def initialize(view = nil)
     unless view.nil?

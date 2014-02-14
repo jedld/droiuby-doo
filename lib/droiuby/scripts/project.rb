@@ -182,7 +182,7 @@ class Project < Thor
     Thread.new do
       while !ready
       end
-      `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n com.droiuby.application/.CanvasActivity`
+      `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n com.droiuby.application/.DroiubyActivity`
       launch(device_ip, "http://#{host_name_args}:#{port}/config.droiuby")
     end
 

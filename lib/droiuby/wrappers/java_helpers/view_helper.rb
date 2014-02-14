@@ -48,6 +48,24 @@ module Droiuby
         end
       end
       
+      def java_attr_writer(*symbols)
+        symbols.each do |s|
+          java_getter_method = "set#{s.to_s.camelize}".to_sym
+          define_method("#{s}=".to_sym) do
+            native.send(java_getter_method)
+          end
+        end
+      end
+      
+      def java_attr_boolean_reader(*symbols)
+        symbols.each do |s|
+          java_getter_method = "is#{s.to_s.camelize}".to_sym
+          define_method(s) do
+            native.send(java_getter_method)
+          end
+        end
+      end
+      
       def java_attr_accessor(*symbols)
         symbols.each do |s|
           java_setter_method = "set#{s.to_s.camelize}".to_sym
