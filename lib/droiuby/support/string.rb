@@ -8,6 +8,10 @@ class String
     end
   end
   
+  def to_pixels
+    Java::com.droiuby.client.core.builder.ActivityBuilder.toPixels(_current_activity, self)
+  end
+  
   def to_color
     Java::android.graphics.Color.parseColor(self)
   end

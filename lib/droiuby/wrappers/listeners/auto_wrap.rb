@@ -3,8 +3,8 @@ module Droiuby
     module Listeners
 
       class AutoWrapBase
-        def to_native(klass)
-          Droiuby::Wrappers::ProxyBuilder::InvocationHandler.new("android.view.View$#{klass}", self).to_native
+        def to_native(klass, package = 'android.view.View')
+          Droiuby::Wrappers::ProxyBuilder::InvocationHandler.new("#{package}$#{klass}", self).to_native
         end
       end
       
@@ -63,8 +63,8 @@ module Droiuby
       
       protected
       
-      def _listener(java_class, &block)
-        Droiuby::Wrappers::Listeners::AutoWrap.new(_execution_bundle, block).to_native(java_class)  
+      def _listener(java_class, package = 'android.view.View' , &block)
+        Droiuby::Wrappers::Listeners::AutoWrap.new(_execution_bundle, block).to_native(java_class, package)  
       end
       
     end
