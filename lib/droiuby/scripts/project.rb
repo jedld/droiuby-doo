@@ -318,9 +318,12 @@ class Project < Thor
       FileUtils.rm archive, :force=>true
 
       Zip::File.open(archive, Zip::File::CREATE) do |zipfile|
-        Dir["#{path}/**/**"].reject{ |f| f==archive || f.match(/\/build/) }.each do |file|
+        Dir.glob("**{,/*/**}/*.*").reject{ |f| f==archive || f.match(/^build/) }.uniq.each do |file|
           say_status 'adding', file
-          zipfile.add(file.sub(path+'/',''),file)
+          begin
+            zipfile.add(file, file)
+          rescue Zip::ZipEntryExistsError=>e
+          end
         end
       end
       say_status 'create', archive
