@@ -13,7 +13,7 @@ class ViewWrapper
   :translation_y, :scroll_x, :scroll_y, :scale_x, :scale_y, :rotation_x, :rotation_y, :camera_distance,
   :padding_left, :padding_top, :padding_right, :padding_bottom
 
-  java_attr_reader :id, :width, :height, :measured_with, :measured_height, :background
+  java_attr_reader :id, :width, :height, :measured_width, :measured_height, :background
   java_attr_writer :selected
   
   java_attr_boolean_reader :selected
@@ -145,7 +145,7 @@ class ViewWrapper
     self.native.performClick
   end
 
-  def p_tree(level = 0)
+  def p_tree(level = 0, extra_attributes = %w[measured_height measured_width])
     spaces = ''
     level.times { |i| spaces << '  '}
 
@@ -171,9 +171,13 @@ class ViewWrapper
       end
     end
 
+    extra_attributes.each do |attr|
+      data_attribute_list << "#{attr.to_sym}=\"#{self.send(attr.to_sym)}\""  
+    end
+
     puts "#{spaces}#{self.class.name} id=\"#{id_attr}\" name=\"#{name_attr}\" class=\"#{class_attr}\" #{data_attribute_list.join(' ')}\n"
     self.children.each { |c|
-      c.p_tree(level + 1)
+      c.p_tree(level + 1, extra_attributes)
     } if self.respond_to? :children
   end
 
