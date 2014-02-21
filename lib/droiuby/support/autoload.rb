@@ -9,7 +9,7 @@ class Object
       raise "Class not found: #{name}" if @looked_for[str_name]
       @looked_for[str_name] = 1
       
-      name_parts = name.split('::').collect { |n| n.underscore }
+      name_parts = name.to_s.split('::').collect { |n| n.underscore }
       require_path = File.join(*name_parts)
       
       puts "autoloading #{require_path}"

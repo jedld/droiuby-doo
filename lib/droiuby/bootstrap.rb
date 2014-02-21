@@ -56,6 +56,10 @@ def _errors
   _execution_bundle.getScriptErrors.collect { |i| i.to_s }
 end
 
+def _R(attr)
+  Java::com.droiuby.client.core.builder.ActivityBuilder.resolveResource(_current_activity, attr)
+end
+
 def _switch(bundle)
   bundle = Java::com.droiuby.client.core.ExecutionBundleFactory.getBundle(bundle)
   $container_payload = bundle.getPayload
