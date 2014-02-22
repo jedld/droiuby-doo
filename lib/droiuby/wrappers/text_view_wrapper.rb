@@ -1,4 +1,3 @@
-
 class TextViewWrapper < ViewWrapper
   
   java_attr_accessor :cursor_visible, :text_color, :text_scale_x

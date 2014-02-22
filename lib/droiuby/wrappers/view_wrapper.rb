@@ -1,6 +1,3 @@
-require 'droiuby/wrappers/animation'
-require 'droiuby/wrappers/java_helpers/view_helper'
-
 class ViewWrapper
 
   include JavaMethodHelper

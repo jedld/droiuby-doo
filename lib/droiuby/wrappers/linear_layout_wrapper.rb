@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/view_wrapper'
-
 class LinearLayoutWrapper < ViewGroupWrapper
   
   java_attr_accessor :baseline_algined, :orientation

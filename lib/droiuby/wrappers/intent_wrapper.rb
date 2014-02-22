@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/java_helpers/view_helper'
-
 class IntentWrapper
   
   include Droiuby::ViewHelper

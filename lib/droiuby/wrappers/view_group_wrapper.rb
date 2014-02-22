@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/view_wrapper'
-
 class ViewGroupWrapper < ViewWrapper
   def inner=(markup)
     _activity_builder.parsePartialReplaceChildren(@view, markup, _execution_bundle)

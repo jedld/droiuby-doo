@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/view_wrapper'
-
 class WebViewWrapper < ViewGroupWrapper
   def src
     @native.getUrl

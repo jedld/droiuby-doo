@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/view_wrapper'
-
 class EditTextWrapper < TextViewWrapper
   
   java_attr_accessor :hint

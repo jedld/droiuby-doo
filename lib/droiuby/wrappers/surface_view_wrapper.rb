@@ -1,5 +1,3 @@
-require 'droiuby/wrappers/canvas'
-
 class SurfaceHolderWrapper
   
   include JavaMethodHelper
