@@ -1,4 +1,3 @@
-require 'droiuby/wrappers/view_wrapper'
 
 class TextViewWrapper < ViewWrapper
   

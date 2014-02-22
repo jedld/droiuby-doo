@@ -31,26 +31,17 @@ module Droiuby
 
     def self.when_api(verb, level, &block)
       current_api_level = Java::android.os.Build::VERSION::SDK_INT
-      case verb
+      case verb.to_sym
+      when :is
+        return DummyOtherwise.new(block.call) if current_api_level == level
       when :greater_than
-        if current_api_level > level
-          return DummyOtherwise.new(block.call)
-        end
+        return DummyOtherwise.new(block.call) if current_api_level > level
       when :less_than
-        if current_api_level < level
-          block.call
-          return DummyOtherwise.new(block.call)
-        end
+        return DummyOtherwise.new(block.call) if current_api_level < level
       when :at_least
-        if current_api_level >= level
-          block.call
-          return DummyOtherwise.new(block.call)
-        end
+        return DummyOtherwise.new(block.call) if current_api_level >= level
       when :at_most
-        if current_api_level <= level
-          block.call
-          return DummyOtherwise.new(block.call)
-        end
+        return DummyOtherwise.new(block.call) if current_api_level <= level
       end
       return Otherwise.new
     end
