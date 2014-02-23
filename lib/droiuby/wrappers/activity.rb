@@ -21,30 +21,34 @@ class Activity
     end
     
     def portrait_mode_only
-      add_before_content_task { _current_activity.setRequestedOrientation(ActivityInfo::SCREEN_ORIENTATION_PORTRAIT) }  
+      add_before_content_render_task { |instance| _current_activity.setRequestedOrientation(ActivityInfo::SCREEN_ORIENTATION_PORTRAIT) }  
     end
 
     def landscape_mode_only
-      add_before_content_task { _current_activity.setRequestedOrientation(ActivityInfo::SCREEN_ORIENTATION_LANDSCAPE) }  
+      add_before_content_render_task { |instance| _current_activity.setRequestedOrientation(ActivityInfo::SCREEN_ORIENTATION_LANDSCAPE) }  
     end
 
     def no_action_bar
-      add_before_content_task { _current_activity.requestWindowFeature(Java::android.view.Window::FEATURE_NO_TITLE) }
+      add_before_content_render_task { |instance| _current_activity.requestWindowFeature(Java::android.view.Window::FEATURE_NO_TITLE) }
     end
 
     def set_theme(theme, namespace = nil)
       namespace = "#{namespace}." unless namespace.nil?
 
-      add_before_content_task do  
+      add_before_content_render_task do |instance|
         _current_activity.setTheme(_R("#{namespace}R.style.#{theme}"))
       end
     end
 
-    private 
-
-    def add_before_content_task(&block) 
+    def add_before_content_render_task(&block) 
       @@before_content_blocks = @@before_content_blocks || []
       @@before_content_blocks << block  
+    end
+
+    def before_render(*symbols)
+      add_before_content_render_task do |instance|
+        symbols.each { |sym| instance.send(sym.to_sym) }
+      end
     end
 
   end
@@ -54,7 +58,7 @@ class Activity
   end
   
   def before_content_render
-    @@before_content_blocks.each { |block| block.call }
+    @@before_content_blocks.each { |block| block.call(self) }
     _current_activity.setContentView(_R('R.layout.canvas'))
   end
 
