@@ -169,7 +169,7 @@ class ViewWrapper
     end
 
     extra_attributes.each do |attr|
-      data_attribute_list << "#{attr.to_sym}=\"#{self.send(attr.to_sym)}\""  
+      data_attribute_list << "#{attr.to_sym}=\"#{p_format(attr,self.send(attr.to_sym))}\""  
     end
 
     puts "#{spaces}#{self.class.name} id=\"#{id_attr}\" name=\"#{name_attr}\" class=\"#{class_attr}\" #{data_attribute_list.join(' ')}\n"
@@ -198,6 +198,17 @@ class ViewWrapper
   end
 
   protected
+
+  def p_format(attribute, value)
+    case attribute.to_sym
+      when :measured_width
+        "#{value.to_dip}dp #{value}px"
+      when :measured_height
+        "#{value.to_dip}dp #{value}px"
+      else
+        value
+    end
+  end
 
   def parse_color(color_value)
     if color_value.kind_of? String

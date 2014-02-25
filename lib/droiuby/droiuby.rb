@@ -33,12 +33,22 @@ class DroiubyFramework
   end
 
   def resolve_view(name, node)
-    klass = name.constantize
-    instance = klass.new
-    if instance < ViewWrapper
+    name_parts = name.split('#')
+
+    klass_str = if name_parts.size > 1
+      "#{name_parts[0].camelize}::#{name_parts[1].camelize}"
+    else
+      name.camelize
+    end
+
+    puts klass_str
+    klass = klass_str.constantize
+
+    instance = klass.new(_current_activity)
+    if instance.class < ViewWrapper
       instance.native
     else
-      instance
+      instance._proxy_class
     end
   end
 

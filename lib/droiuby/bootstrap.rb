@@ -24,6 +24,10 @@ def _scripting_container
   PayloadWrapper.java_getContainer
 end
 
+def _runtime
+   _scripting_container.getProvider.getRuntime
+end
+
 def _current_app
   PayloadWrapper.java_getActiveApp
 end

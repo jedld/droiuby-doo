@@ -4,10 +4,9 @@ module Droiuby
       class InvocationHandler
         
         def initialize(klass_name, backing_object)
-          puts "autowrap using dexmaker"
-          handler = Java::com.droiuby.wrappers.InvocationHandlerRubyWrapper.new(_execution_bundle, self)
+          handler = Java::com.droiuby.client.core.wrappers.InvocationHandlerRubyWrapper.new(_execution_bundle, self)
           @backing_object = backing_object
-          @native = Java::com.droiuby.client.core.InterfaceGenerator.wrapperForClass(_current_activity, klass_name, handler)
+          @native = Java::com.droiuby.client.core.InterfaceGenerator.wrapperForClassOrInterface(_current_activity, klass_name, handler)
         end
 
         def invoke(object, method, params)

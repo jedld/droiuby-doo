@@ -78,15 +78,21 @@ case command
 
       begin
           while !Ripper.sexp(buf) || !valid_statement?(buf)
-              buf = buf + "\n" + Readline.readline("?> ", true) + "\n"
+              buf = buf + "\n" + Readline.readline("droiuby ?> ", true) + "\n"
           end
       rescue Interrupt
         puts "\n"
         next
       end
       next if buf.blank?
-      res = JSON.parse(project.command(buf, $device_ip))
-      puts res['result']
+
+      begin
+        res = JSON.parse(project.command(buf, $device_ip))
+        puts res['result']
+      rescue EOFError=>e
+        puts 'cannot communicate with the device. make sure it is connected and the WebConsole is started'
+      end
+      
     end
   when 'list'
     project.list($device_ip)
