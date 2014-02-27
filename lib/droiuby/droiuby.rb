@@ -48,7 +48,7 @@ class DroiubyFramework
     if instance.class < ViewWrapper
       instance.native
     else
-      instance._proxy_class
+      instance._proxy_class([Java::android.content.Context.java_class], [_current_activity])
     end
   end
 
