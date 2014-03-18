@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.2.0'
-  s.date        = '2014-02-13'
+  s.version     = '0.2.2'
+  s.date        = '2014-02-27'
   s.summary     = "Droiuby GEM"
   s.description = "Android development and rapid prototyping using ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
@@ -23,5 +23,5 @@ Gem::Specification.new do |s|
      "4. Attach your android phone to your PC via USB\n" +
      "5. visit https://github.com/jedld/droiuby-doo for the quick start tutorial\n" +
      "\nDetails can be found in the README"
-     
+
 end

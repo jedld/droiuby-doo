@@ -1,6 +1,11 @@
 #Droiuby app introspection class
 module Droiuby
   class Application
+
+    def self.root
+      _current_app.getWorkingDirectory
+    end
+
     def self.assets
       @active_app = @active_app || _current_app
       assets = {}

@@ -2,7 +2,7 @@ require 'droiuby/loader'
 
 #Droiuby Framework class
 class DroiubyFramework
-  
+
   def before_activity_setup
     fname = "#{File.dirname(__FILE__)}/bootstrap.rb"
     @bootstrap = @bootstrap || File.read(fname)
@@ -18,12 +18,12 @@ class DroiubyFramework
   def on_click(view)
   end
 
-  def script(controller)
+  def script(controller, refresh = false)
     klass = controller.camelize.constantize
     instance = klass.new
 
     skip_content_view = if instance.respond_to? :before_content_render
-      instance.before_content_render
+      instance.before_content_render unless refresh
     end
 
     set_content_view unless skip_content_view

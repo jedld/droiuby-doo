@@ -27,9 +27,9 @@ class Project < Thor
       device_ip
     end
   }
-  
-  
-  desc "proximity [device_ip] [true|false]", "enable/disable proximity refresh" 
+
+
+  desc "proximity [device_ip] [true|false]", "enable/disable proximity refresh"
   def proximity(device_ip, proximity = 'false')
     device_ip = map_device_ip(device_ip)
     url_str = "http://#{device_ip}:4000/control?cmd=proximity&switch=#{proximity}"
@@ -38,12 +38,12 @@ class Project < Thor
     response = Net::HTTP.get_response(uri)
     response.body
   end
-  
+
   desc "launch device IP [URL]","Tell droiuby to connect to app hosted at URL"
   def launch(device_ip, url)
-    
+
     device_ip = map_device_ip(device_ip)
-    
+
     url_str = "http://#{device_ip}:4000/control?cmd=launch&url=#{CGI::escape(url)}"
     puts "loading application at url #{url}"
     puts url_str
@@ -67,7 +67,7 @@ class Project < Thor
           puts item
         end
   end
-  
+
   desc "cmd [command] [DEVICE_IP]", "Send command to a Droiuby instance"
   def command(command_line, device_ip=nil)
     device_ip = map_device_ip(device_ip)
@@ -77,7 +77,7 @@ class Project < Thor
     response = Net::HTTP.get_response(uri)
     response.body
   end
-  
+
   desc "reload [DEVICE_IP]", "Reload app at specified device"
   def reload(device_ip = nil)
     device_ip = map_device_ip(device_ip)
@@ -86,8 +86,8 @@ class Project < Thor
     # Shortcut
     response = Net::HTTP.get_response(uri)
     response.body
-  end  
-  
+  end
+
   desc "switch [name] [DEVICE IP]","switch to target app instance identified by name"
   def switch(name, device_ip = nil)
     device_ip = map_device_ip(device_ip)
@@ -99,7 +99,7 @@ class Project < Thor
     # Will print response.body
     response = Net::HTTP.get_print(uri)
   end
-  
+
   desc "autostart MODE [NAME] [DEVICE IP]","set current app to load on startup"
   def autostart(mode = 'on', name = nil, device_ip = nil)
     device_ip = map_device_ip(device_ip)
@@ -108,16 +108,16 @@ class Project < Thor
     else
       "http://#{device_ip}:4000/control?cmd=clearautostart"
     end
-        
+
     puts url_str
     uri = URI.parse(url_str)
     # Shortcut
     response = Net::HTTP.get_response(uri)
     # Will print response.body
     Net::HTTP.get_print(uri)
-    
+
   end
-  
+
   desc "create NAME [WORKSPACE_DIR]","create a new droiuby project with NAME"
 
   def create(name, output_dir = 'projects')
@@ -125,7 +125,7 @@ class Project < Thor
     @description = name
     @launcher_icon = ''
     @base_url = ''
-    @main_xml = 'index.xml'
+    @main_xml = File.join("app","views","index.xml")
 
     if output_dir.blank?
       output_dir = Dir.pwd
@@ -135,9 +135,9 @@ class Project < Thor
     template File.join('ruby','Gemfile.erb'), File.join(dest_folder,"Gemfile")
     template File.join('ruby','config.droiuby.erb'), File.join(dest_folder,"config.droiuby")
     template File.join('ruby','gitignore.erb'), File.join(dest_folder,".gitignore")
-    template File.join('ruby','index.xml.erb'), File.join(dest_folder,"index.xml")
-    template File.join('ruby','application.css.erb'), File.join(dest_folder,"application.css")
-    template File.join('ruby','index.rb.erb'), File.join(dest_folder,"index.rb")
+    template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
+    template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
+    template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
     empty_directory File.join(dest_folder,"lib")
     say "running bundle install"
     Dir.chdir dest_folder
@@ -172,9 +172,9 @@ class Project < Thor
     else
       File.join(source_dir_args, name)
     end
-    
+
     device_ip = map_device_ip(device_ip)
-    
+
     port = 2000
 
     ready = false
@@ -197,7 +197,7 @@ class Project < Thor
     trap("INT"){ server.shutdown }
     server.start
   end
-  
+
   desc "upload NAME DEVICE_IP [WORKSPACE_DIR]","uploads a droiuby application to target device running droiuby client"
 
   def upload(name, device_ip, source_dir = 'projects', framework = false, run = true)
@@ -209,9 +209,9 @@ class Project < Thor
     end
 
     device_ip = map_device_ip(device_ip)
-    
+
     src_package = if framework
-      File.join(source_dir,'framework_src','build',"#{name}.zip") 
+      File.join(source_dir,'framework_src','build',"#{name}.zip")
     elsif !name.blank?
       File.join(source_dir,name,'build',"#{name}.zip")
     else
@@ -223,14 +223,14 @@ class Project < Thor
     uri = URI.parse(url_str)
     say "uploading #{src_package} to #{url_str} -> #{uri.host}:#{uri.port}"
     File.open(src_package) do |zip|
-      
-      params = {                                          
+
+      params = {
         "name" => name,
         "run" => run ? 'true' : 'false',
         "file" => UploadIO.new(zip, "application/zip", src_package,"content-disposition" => "form-data; name=\"file\"; filename=\"#{File.basename(src_package)}\"\r\n")}
-      
-        
-      params.merge!(framework: 'true') if framework   
+
+
+      params.merge!(framework: 'true') if framework
       req = Net::HTTP::Post::Multipart.new uri.path, params
 
       retries = 0
@@ -278,14 +278,14 @@ class Project < Thor
   end
 
   desc "bundle", "unpack all cached gems"
-  
+
   def bundle
     cache_dir = File.join('vendor','cache')
-    
+
     unless Dir.exists?(cache_dir)
       puts `bundle package --all`
     end
-    
+
     if Dir.exists?(cache_dir)
       path = cache_dir
       puts 'watch out for exploding gems'
@@ -297,7 +297,7 @@ class Project < Thor
       say_status 'error', "can't find cache directory /vendor/cache"
     end
 
-      
+
   end
 
   private
@@ -307,12 +307,12 @@ class Project < Thor
     unless Dir.exists?(File.join(path,'build'))
       Dir.mkdir(File.join(path,'build'))
     end
-    
+
     archive_name = File.basename(path) if archive_name.nil?
-    
-    
+
+
     archive = File.join(path,'build',"#{archive_name}.zip")
-    
+
     if force=='true' || file_collision(archive)
 
       FileUtils.rm archive, :force=>true
