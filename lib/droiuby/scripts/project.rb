@@ -118,6 +118,32 @@ class Project < Thor
 
   end
 
+  desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
+  def standalone(name, package_name, output_dir = 'projects')
+
+    if output_dir.blank?
+      output_dir = Dir.pwd
+    end
+
+    dest_folder = File.join(output_dir,"#{name}")
+
+    template_repository = ENV['droiuby_template'] || 'git@github.com:jedld/droiuby-template.git'
+    template_directory = '~/.droiuby/android_project_templates'
+    unless File.exists?(template_directory)
+      say "obtaining template project from repository"
+      `git clone #{template_repository} #{template_directory}`
+    end
+    directory template_directory, File.join(dest_folder,'project')
+    Dir.chdir File.join(dest_folder,'project')
+    require File.join(dest_folder,'project','init.rb')
+
+    archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
+
+    init = Init.new
+    init.init(package_name, archive_name)
+  end
+
+
   desc "create NAME [WORKSPACE_DIR]","create a new droiuby project with NAME"
 
   def create(name, output_dir = 'projects')
