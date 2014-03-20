@@ -53,12 +53,16 @@ If successful, droiuby should boot and load your "hello world" app. If it does n
 
 It is also possible to generate a standalone android project.
 
-chdir to your target project and:
+chdir to your target project and
 
     ~ $ drby standalone --package com.sample.helloworld
 
 This will create an android project at hello_world/project. You can then open
 this using Android Developer Tools.
+
+To Learn more on how to develop apps using droiuby please proceed to the Droiuby Wiki
+
+[Droiuby Wiki](https://github.com/jedld/droiuby/wiki)
 
 Testing without the Android SDK
 ===============================
