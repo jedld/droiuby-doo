@@ -31,7 +31,9 @@ Install the droiuby app on your android phone or tablet:
 
     https://play.google.com/store/apps/details?id=com.droiuby.application
 
-Also if this is your first time developing for android make sure your phone is set up for development mode (This depends on your phone and android version). If you are unable to setup developer mode see "Testing without the android SDK".
+Also if this is your first time developing for android make sure your phone is
+set up for development mode (This depends on your phone and android version).
+If you are unable to setup developer mode see "Testing without the android SDK".
 
 Quick Start Tutorial
 ====================
@@ -49,6 +51,15 @@ Package and Execute the app. At this point make sure your phone is connected to 
 
 If successful, droiuby should boot and load your "hello world" app. If it does not, you may attempt to run droiuby manually from your phone and then repeat the previous step.
 
+It is also possible to generate a standalone android project.
+
+chdir to your target project and:
+
+    ~ $ drby standalone --package com.sample.helloworld
+
+This will create an android project at hello_world/project. You can then open
+this using Android Developer Tools.
+
 Testing without the Android SDK
 ===============================
 
@@ -64,11 +75,11 @@ Create a new project (same as above) and cd into it.
 Package the app
 
     drby pack
-    
+
 This will create a zip file under the build directory, we will upload this zip file later.
 
 On your phone, make sure you have downloaded the droiuby app:
- 
+
     https://play.google.com/store/apps/details?id=com.droiuby.application&hl=en
 
 Run it, and once Droiuby has finished loading, your phone's IP address and the WebConsole port will be displayed on-screen.
@@ -76,7 +87,7 @@ Run it, and once Droiuby has finished loading, your phone's IP address and the W
 Open the web browser on your PC and enter the following URL:
 
     http://<Your Phone's IP>:4000
-    
+
 You should see the IRB like interface of the Droiuby Console, there wil be a link to upload your file, click on the link.
 
 Browse and select the zip file that was created by the pack command. This will upload the app to your phone and run it.
@@ -97,7 +108,7 @@ Create a new project (same as above)
 Package and Execute the app. At this point make sure droiuby is running on your phone.
 
     drby go -d [Your phone's IP address]
-    
+
 Example
 
     cd my_awesome_app
@@ -139,7 +150,7 @@ Get a hold of the droiuby APK. You may do this by getting the compiled binary fr
 First, make sure the emulator is running and then do a "adb install"
 
     adb install droiuby.apk
-    
+
 The emulator should work as if it was a phone connected via usb and the drby commands should work fine.
 
 Sample Applications
@@ -184,7 +195,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-
-
-
