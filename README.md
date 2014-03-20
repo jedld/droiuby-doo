@@ -64,7 +64,7 @@ Diving in
 ---------
 
 A simple "Hello World" is not enough? Let's try to add a button and an action
-that populates a text field when that happens.
+that changes the "Hello World" text from a text field when that happens.
 
 But ... before we try to modify our "Hello World" project, let's look at what we have...
 
@@ -107,6 +107,108 @@ located if you invoked the "drby standalone" command.
 
 vendor/ - The vendor folder is where the project gem dependencies are stored.
 
+Now Let's look at the app folder
+
+    app
+    ├── activities
+    │   └── index.rb
+    └── views
+        ├── index.xml
+        └── styles
+            └── application.css
+
+The activities folder contain code related to handling "Activities" on Android. If
+you are using rails you can think of them as controllers.
+
+The views folder contain templates and styles for rendering UI, such as forms, fields, lists etc.
+
+So let's first add a button. Open up index.xml
+
+  <activity controller="app/activities/index.rb#index">
+      <preload id="application_css" src="app/views/styles/application.css" type="css"/>
+      <layout type="linear" width="match" height="match" orientation="vertical">
+      	<t>Hello World!</t>
+      </layout>
+  </activity>
+
+Let's add the button tag after hello world so it looks like this
+
+    ...
+    <layout type="linear" width="match" height="match" orientation="vertical">
+      <t>Hello World!</t>
+      <button id="click">Click Me!</button>
+    </layout>
+    ...
+
+Notice we also set an id "click" for the button tag, we will need that later. While
+we are at it let's make sure the "Hello World" text also has an id.
+
+    <t id="target">Hello World!</t>
+
+And then the text field and set an id
+
+    ...
+    <layout type="linear" width="match" height="match" orientation="vertical">
+      <t>Hello World!</t>
+      <input id="hello_field" type="text" width="match" height="wrap" hint="Enter Values" />
+      <button id="click">Click Me!</button>
+    </layout>
+    ...
+
+Ok, so let's modify the activity script. We now open up index.rb
+
+    #droiuby ruby script
+    class Index < Activity
+    	def on_create
+    	  #called when activity is first created
+    	end
+
+    	def on_activity_result(request_code, result_code, intent)
+    	  #callback from starting an activity with result
+    	end
+    end
+
+Let's attach an on click event to the button we created earlier
+
+    ...
+    def on_create
+      V('#click').on(:click) { |view|
+      }
+    end
+    ...
+
+Noticed that we used V('#click') to select the button. Now let's add some action.
+
+First we also select the text field and the "Hello World" text
+
+    ...
+    def on_create
+
+      @hello_text_field = V('#hello_field')
+      @hello = V('#target')
+
+      V('#click').on(:click) { |view|
+      }
+    end
+    ...
+
+Then add code to change the text when "Click Me!" is pressed.
+
+    ...
+    def on_create
+
+      @hello_text_field = V('#hello_field')
+      @hello = V('#target')
+
+      V('#click').on(:click) { |view|
+        @hello.text = @hello_text_field.text
+      }
+    end
+    ...
+
+And we're done. Let's run the app to make sure it works
+
+    drby go
 
 To Learn more on how to develop apps using droiuby please proceed to the Droiuby Wiki
 
