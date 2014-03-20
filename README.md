@@ -60,6 +60,54 @@ chdir to your target project and
 This will create an android project at hello_world/project. You can then open
 this using Android Developer Tools.
 
+Diving in
+---------
+
+A simple "Hello World" is not enough? Let's try to add a button and an action
+that populates a text field when that happens.
+
+But ... before we try to modify our "Hello World" project, let's look at what we have...
+
+The "drby new" command should generate the project structure below:
+
+    hello_world
+    ├── Gemfile
+    ├── Gemfile.lock
+    ├── app
+    │   ├── activities
+    │   │   └── index.rb
+    │   └── views
+    │       ├── index.xml
+    │       └── styles
+    │           └── application.css
+    ├── build
+    │   └── hello_world.zip
+    ├── config.droiuby
+    ├── lib
+    ├── project
+    └── vendor
+
+Here is a brief overview of what those folders and files are about:
+
+Gemfile - The standard Gemfile that contains the list of gems that the app is
+dependent upon. It is used by bundler to download the necessary gem dependencies.
+Right now only the 'droiuby' gem is listed. Droiuby supports most gems that work on JRuby.
+
+app/ The app folder contains the actual application code. We will get to this later.
+
+build/ - The build folder will contain the build artifacts.
+
+config.droiuby - is an xml file that contains metadata about the project and is used
+when booting the app inside android.
+
+lib/ - The lib folder is where you can place your .rb files that don't belong in app/
+
+project/ - The project folder is where the standalone Android project files are
+located if you invoked the "drby standalone" command.
+
+vendor/ - The vendor folder is where the project gem dependencies are stored.
+
+
 To Learn more on how to develop apps using droiuby please proceed to the Droiuby Wiki
 
 [Droiuby Wiki](https://github.com/jedld/droiuby/wiki)
