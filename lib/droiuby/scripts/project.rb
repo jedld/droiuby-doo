@@ -128,19 +128,34 @@ class Project < Thor
     dest_folder = File.join(output_dir,"#{name}")
 
     template_repository = ENV['droiuby_template'] || 'git@github.com:jedld/droiuby-template.git'
-    template_directory = '~/.droiuby/android_project_templates'
+    template_directory = File.expand_path('~/.droiuby/android_project_templates')
+
     unless File.exists?(template_directory)
-      say "obtaining template project from repository"
-      `git clone #{template_repository} #{template_directory}`
+      say "no cached copy yet. obtaining template project from repository"
+      `git clone --depth 1 #{template_repository} #{template_directory}`
+    else
+      say "checking for template updates..."
+      Dir.chdir template_directory
+      `git pull`
     end
+
+    #prepare
     directory template_directory, File.join(dest_folder,'project')
+    remove_dir "#{File.join(dest_folder,'project')}/.git"
+
     Dir.chdir File.join(dest_folder,'project')
-    require File.join(dest_folder,'project','init.rb')
+
+    require "#{File.join(dest_folder,'project','init.rb')}"
 
     archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
 
     init = Init.new
-    init.init(package_name, archive_name)
+    init.init(package_name, "#{archive_name}.zip")
+    Dir.chdir dest_folder
+    bundle
+    package(name, '', "true")
+    copy_file File.join(dest_folder, 'build',"#{archive_name}.zip"), File.join(dest_folder,'project','assets',"#{archive_name}.zip")
+    say "Your android project is located at #{dest_folder}/project."
   end
 
 

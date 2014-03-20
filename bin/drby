@@ -10,21 +10,23 @@ $droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
 $device_ip = ENV['DROIUBY_DEVICE'] || nil
 
 options = OptionParser.new do |o|
-  o.banner = 
+  o.banner =
 "Usage: drby autostart true|false INSTANCE_NAME [options] # Set specified instance to start on droiuby launch
-       drby console [options]                            # Launch an interactive console to the target Android Device running Droiuby
-       drby framework update  [FOLDER] [options]         # updates the droiuby framework from folder (default src_framework)
-       drby go   [PROJECT_NAME] [options]                # packages an app and uploads to an Android Device running Droiuby
-       drby list [options]                               # Lists the app instances running on the phone
-       drby live [PROJECT_NAME] [options]                # runs a web instance of the app and tells Droiuby to load it.
-       drby new PROJECT_NAME [options]                   # Create a new project 
-       drby pack [PROJECT_NAME] [options]                # zips and packages an app
-       drby reload                                       # uploads and then reload the current app
-       drby switch INSTANCE_NAME [options]               # Switch to the specified instance
-       drby bundle                                       # unzips all gems in vendor/cache for deployment to droiuby\n"
+       drby console [options]                                  # Launch an interactive console to the target Android Device running Droiuby
+       drby framework update  [FOLDER] [options]               # updates the droiuby framework from folder (default src_framework)
+       drby go   [PROJECT_NAME] [options]                      # packages an app and uploads to an Android Device running Droiuby
+       drby list [options]                                     # Lists the app instances running on the phone
+       drby live [PROJECT_NAME] [options]                      # runs a web instance of the app and tells Droiuby to load it.
+       drby new PROJECT_NAME [options]                         # Create a new project
+       drby pack [PROJECT_NAME] [options]                      # zips and packages an app
+       drby standalone [PROJECT_NAME] --package [JAVA_PACKAGE] # creates a standalone android project for the current app
+       drby reload                                             # uploads and then reload the current app
+       drby switch INSTANCE_NAME [options]                     # Switch to the specified instance
+       drby bundle                                             # unzips all gems in vendor/cache for deployment to droiuby\n"
 
   o.separator ""
   o.separator "options:"
+  o.on('-p','--package java_package','The java package name to use') {|b| $java_package = b}
   o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
   o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
   o.parse!
@@ -92,10 +94,26 @@ case command
       rescue EOFError=>e
         puts 'cannot communicate with the device. make sure it is connected and the WebConsole is started'
       end
-      
+
     end
   when 'list'
     project.list($device_ip)
+  when 'standalone'
+    project_name = nil
+    unless ARGV[1].blank?
+      project_name = ARGV[1]
+    else
+      if !File.exists?('config.droiuby')
+         puts 'current directory is not a valid droiuby project'
+         exit(1)
+      end
+    end
+
+    if $java_package.nil?
+      puts '--package [JAVA_PACKAGE] is required.'
+      exit(1)
+    end
+    project.standalone(project_name, $java_package, '')
   when 'switch'
     instance_name = nil
     unless ARGV[1].blank?
@@ -109,13 +127,13 @@ case command
       exit(1)
     end
     project.switch(instance_name, $device_ip)
-  when 'autostart' 
+  when 'autostart'
     switch = ARGV[1]
     if switch.blank?
       puts "Usage: drby autostart on|off [NAMESPACE] [options]"
       exit(1)
     end
-    project.autostart(switch, ARGV[2], $device_ip) 
+    project.autostart(switch, ARGV[2], $device_ip)
   when 'pack'
     project_name = nil
     unless ARGV[1].blank?
@@ -126,7 +144,7 @@ case command
          exit(1)
       end
     end
-    project.package(project_name) 
+    project.package(project_name)
   when 'framework'
     if ARGV[1] == 'update'
         project = Project.new
@@ -139,8 +157,8 @@ case command
     unless ARGV[1].blank?
       project_name = ARGV[1]
     end
-    
-    project.execute(project_name, $device_ip, $droiuby_host) 
+
+    project.execute(project_name, $device_ip, $droiuby_host)
   when 'bundle'
     project.bundle
   when 'live'
