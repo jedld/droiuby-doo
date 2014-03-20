@@ -124,12 +124,12 @@ The views folder contain templates and styles for rendering UI, such as forms, f
 
 So let's first add a button. Open up index.xml
 
-  <activity controller="app/activities/index.rb#index">
-      <preload id="application_css" src="app/views/styles/application.css" type="css"/>
-      <layout type="linear" width="match" height="match" orientation="vertical">
-      	<t>Hello World!</t>
-      </layout>
-  </activity>
+    <activity controller="app/activities/index.rb#index">
+        <preload id="application_css" src="app/views/styles/application.css" type="css"/>
+        <layout type="linear" width="match" height="match" orientation="vertical">
+        	<t>Hello World!</t>
+        </layout>
+    </activity>
 
 Let's add the button tag after hello world so it looks like this
 
