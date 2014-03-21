@@ -194,8 +194,16 @@ class Project < Thor
     else
       File.join(source_dir, name)
     end
+
     say "compress #{src_folder}"
-    compress(src_folder, force)
+    archive = compress(src_folder, force)
+
+    project_directory = File.join(src_folder,'project')
+    say "Checking if #{project_directory}"
+    if File.exists? project_directory
+      say "Android Project exists. Updating build inside assets ..."
+      copy_file archive, File.join(project_directory,'assets',File.basename(archive))
+    end
   end
 
   require 'webrick'
@@ -369,5 +377,7 @@ class Project < Thor
       end
       say_status 'create', archive
     end
+
+    archive
   end
 end
