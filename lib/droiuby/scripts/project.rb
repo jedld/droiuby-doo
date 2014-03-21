@@ -154,7 +154,6 @@ class Project < Thor
     Dir.chdir dest_folder
     bundle
     package(name, '', "true")
-    copy_file File.join(dest_folder, 'build',"#{archive_name}.zip"), File.join(dest_folder,'project','assets',"#{archive_name}.zip")
     say "Your android project is located at #{dest_folder}/project."
   end
 
