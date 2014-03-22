@@ -1,36 +1,39 @@
 class SurfaceHolderWrapper
-  
+
   include JavaMethodHelper
-  
+
   java_native_method Java::com.droiuby.client.core.wrappers.SurfaceViewHolderWrapper, :lockCanvas, [], "java_lockCanvasVoid"
   java_native_method Java::com.droiuby.client.core.wrappers.SurfaceViewHolderWrapper, :lockCanvas, [Java::android.graphics.Rect], "java_lockCanvas"
   java_native_method Java::com.droiuby.client.core.wrappers.SurfaceViewHolderWrapper, :unlockCanvasAndPost, [Java::android.graphics.Canvas]
-    
+
   def initialize(surface)
     @native = surface
   end
-  
+
   def native
     @native
   end
-  
+
   def lock(rect = nil, &block)
     if rect.nil?
 #      canvas = Canvas.new(native.lockCanvas)
-      canvas = Canvas.new(java_lockCanvasVoid)
+
+
+      canvas_lock = java_lockCanvasVoid
+      canvas = CanvasWrapper.new(canvas_lock)
     else
 #      canvas = Canvas.new(native.lockCanvas(rect))
-      canvas = Canvas.new(java_lockCanvas(rect.native))
+      canvas = CanvasWrapper.new(java_lockCanvas(rect.native))
     end
     block.call(canvas)
 #    native.unlockCanvasAndPost(canvas.native)
     java_unlockCanvasAndPost(canvas.native)
   end
-  
+
 end
 
 class SurfaceViewWrapper < ViewWrapper
-  
+
   def initialize(view = nil)
     unless view.nil?
       @view = view
@@ -40,7 +43,7 @@ class SurfaceViewWrapper < ViewWrapper
     @builder = Java::com.droiuby.client.core.builder.ViewBuilder.new
     @builder.setContext(_current_activity)
   end
-  
+
   def on(event, &block)
     case(event.to_sym)
         when :surface_created
@@ -53,5 +56,5 @@ class SurfaceViewWrapper < ViewWrapper
           super(event.to_sym, &block)
       end
   end
-    
+
 end
