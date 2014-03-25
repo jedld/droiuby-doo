@@ -127,7 +127,7 @@ class Project < Thor
 
     dest_folder = File.join(output_dir,"#{name}")
 
-    template_repository = ENV['droiuby_template'] || 'git@github.com:jedld/droiuby-template.git'
+    template_repository = ENV['droiuby_template'] || 'https://github.com/jedld/droiuby-template.git'
     template_directory = File.expand_path('~/.droiuby/android_project_templates')
 
     unless File.exists?(template_directory)
