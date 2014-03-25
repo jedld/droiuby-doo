@@ -1,11 +1,11 @@
-class Object
+require 'droiuby/support/object/acts_like'
+require 'droiuby/support/object/blank'
+require 'droiuby/support/object/duplicable'
+require 'droiuby/support/object/deep_dup'
+require 'droiuby/support/object/try'
+require 'droiuby/support/object/inclusion'
 
-  def blank?
-    respond_to?(:empty?) ? empty? : !self
-  end
-  
-  def boolean?
-    self.is_a?(TrueClass) || self.is_a?(FalseClass) 
-  end
-  
-end
+require 'droiuby/support/object/instance_variables'
+
+require 'droiuby/support/object/to_param'
+require 'droiuby/support/object/to_query'

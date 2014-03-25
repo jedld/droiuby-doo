@@ -5,8 +5,8 @@ require 'zip'
 require 'thor'
 require "uri"
 require 'cgi'
-require 'active_support/core_ext/object'
-require 'active_support/core_ext/string'
+require 'droiuby/support/object'
+require 'droiuby/support/string'
 
 class Project < Thor
 
@@ -366,7 +366,8 @@ class Project < Thor
       FileUtils.rm archive, :force=>true
 
       Zip::File.open(archive, Zip::File::CREATE) do |zipfile|
-        Dir.glob("**{,/*/**}/*.*").reject{ |f| f==archive || f.match(/^build/) }.uniq.each do |file|
+        Dir.glob("**{,/*/**}/*.*").reject{ |f| f==archive ||
+            f.match(/^build/) || f.match(/^project/) }.uniq.each do |file|
           say_status 'adding', file
           begin
             zipfile.add(file, file)
