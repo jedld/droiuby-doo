@@ -119,7 +119,7 @@ class Project < Thor
   end
 
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
-  def standalone(name, package_name, output_dir = 'projects')
+  def standalone(name, package_name, title = 'HelloWorld', output_dir = 'projects')
 
     if output_dir.blank?
       output_dir = Dir.pwd
@@ -150,7 +150,7 @@ class Project < Thor
     archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
 
     init = Init.new
-    init.init(package_name, "#{archive_name}.zip")
+    init.init(package_name, "#{archive_name}.zip", title)
     Dir.chdir dest_folder
     bundle
     package(name, '', "true")

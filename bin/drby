@@ -8,6 +8,7 @@ require "readline"
 
 $droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
 $device_ip = ENV['DROIUBY_DEVICE'] || nil
+$app_name = nil
 
 options = OptionParser.new do |o|
   o.banner =
@@ -19,13 +20,15 @@ options = OptionParser.new do |o|
        drby live [PROJECT_NAME] [options]                      # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                         # Create a new project
        drby pack [PROJECT_NAME] [options]                      # zips and packages an app
-       drby standalone [PROJECT_NAME] --package [JAVA_PACKAGE] # creates a standalone android project for the current app
+       drby standalone [PROJECT_NAME] --package JAVA_PACKAGE   # creates a standalone android project for the current app
+            [--name APP_NAME]
        drby reload                                             # uploads and then reload the current app
        drby switch INSTANCE_NAME [options]                     # Switch to the specified instance
        drby bundle                                             # unzips all gems in vendor/cache for deployment to droiuby\n"
 
   o.separator ""
   o.separator "options:"
+  o.on('-n','--name app_name','The name of the app that appears in the launcher') {|b| $app_name =b }
   o.on('-p','--package java_package','The java package name to use') {|b| $java_package = b}
   o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
   o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
@@ -113,7 +116,8 @@ case command
       puts '--package [JAVA_PACKAGE] is required.'
       exit(1)
     end
-    project.standalone(project_name, $java_package, '')
+    project.standalone(project_name, $java_package, $app_name.nil? ? 'HelloWorld'
+        : $app_name,'')
   when 'switch'
     instance_name = nil
     unless ARGV[1].blank?
