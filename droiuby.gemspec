@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.2.9'
-  s.date        = '2014-03-26'
+  s.version     = '0.3.0'
+  s.date        = '2014-03-27'
   s.summary     = "Droiuby GEM"
   s.description = "Android app development and rapid prototyping using Ruby"
   s.authors     = ["Joseph Emmanuel Dayo"]
