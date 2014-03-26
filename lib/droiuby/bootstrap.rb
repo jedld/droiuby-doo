@@ -57,7 +57,12 @@ def _active_bundles
 end
 
 def _errors
-  _execution_bundle.getScriptErrors.collect { |i| i.to_s }
+  _execution_bundle.getScriptErrors.collect { |e| e.to_s }
+end
+
+def _add_error(error_message)
+  _execution_bundle.addError(error_message)
+  error_message
 end
 
 def _R(attr)
@@ -96,7 +101,7 @@ def render(url, params = {})
   end
 
   new_activity = params[:activity] ? true : false;
-    
+
   async.perform {
     Java::com.droiuby.client.core.DroiubyLauncher.loadPage(_current_activity, _execution_bundle, url, http_method)
   }.done { |result|
@@ -264,4 +269,3 @@ def http_get(url, params = {}, options = {})
 
   Java::com.droiuby.client.core.utils.Utils.load(_current_activity, url_string, _execution_bundle);
 end
-

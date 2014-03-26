@@ -5,6 +5,7 @@ require 'zip'
 require 'thor'
 require "uri"
 require 'cgi'
+require 'nokogiri'
 require 'droiuby/support/object'
 require 'droiuby/support/string'
 
@@ -119,13 +120,25 @@ class Project < Thor
   end
 
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
-  def standalone(name, package_name, title = 'HelloWorld', output_dir = 'projects')
+  def standalone(name, package_name, title = nil, output_dir = 'projects')
 
     if output_dir.blank?
       output_dir = Dir.pwd
     end
 
     dest_folder = File.join(output_dir,"#{name}")
+
+    Dir.chdir dest_folder
+
+    if title.nil?
+
+      doc = Nokogiri.XML(File.read('config.droiuby'))
+
+      doc.css('app_descriptor name').each do |element|
+        title = element.content
+      end
+
+    end
 
     template_repository = ENV['droiuby_template'] || 'https://github.com/jedld/droiuby-template.git'
     template_directory = File.expand_path('~/.droiuby/android_project_templates')
@@ -198,10 +211,10 @@ class Project < Thor
     archive = compress(src_folder, force)
 
     project_directory = File.join(src_folder,'project')
-    say "Checking if #{project_directory}"
+    say "exsits? #{project_directory}"
     if File.exists? project_directory
       say "Android Project exists. Updating build inside assets ..."
-      copy_file archive, File.join(project_directory,'assets',File.basename(archive))
+      copy_file archive, File.join(project_directory,'assets',File.basename(archive)), force: true
     end
   end
 
@@ -313,7 +326,6 @@ class Project < Thor
   end
 
   desc "framework DEVICE_IP","updates the droiuby framework using code from framework_src"
-
   def framework(device_ip = nil, source_dir = 'framework_src')
     compress(source_dir, "true", "framework")
     upload 'framework', device_ip, File.join(Dir.pwd,"framework_src"), true
@@ -321,8 +333,38 @@ class Project < Thor
 
   desc "execute NAME DEVICE_IP [WORKSPACE_DIR]","package and execute a droiuby application to target device running droiuby client"
   def execute(name, device_ip, source_dir = 'projects')
+
     package name, source_dir, "true"
-    upload name, device_ip, source_dir
+
+    source_dir_args = source_dir ? source_dir : 'projects'
+    src_dir = if name.blank?
+      Dir.pwd
+    else
+      File.join(source_dir_args, name)
+    end
+
+    project_directory = File.join(src_dir,'project')
+
+    say "exsits? #{project_directory}"
+    if File.exists? project_directory
+      say "Android Project exists. Building debug project instead ..."
+      Dir.chdir(project_directory)
+      doc = Nokogiri.XML(File.read('AndroidManifest.xml'))
+
+      package_name = nil
+      doc.css('manifest').each do |element|
+        package_name = element['package']
+      end
+
+      `ant debug install`
+
+      say "Starting activity #{package_name}"
+      
+      `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
+    else
+      upload name, device_ip, source_dir
+    end
+
   end
 
   desc "bundle", "unpack all cached gems"

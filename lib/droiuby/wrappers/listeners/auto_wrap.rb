@@ -73,10 +73,16 @@ module Droiuby
       def _listener(java_class, package = 'android.view.View' , &block)
         puts "using dexmaker auto wrapper"
         Proc.new { |*args|
-          wrapped_args = args.collect { |a|
-            wrap_native_view(a)
-          }
-          block.call(*wrapped_args)
+          begin
+            wrapped_args = args.collect { |a|
+              wrap_native_view(a)
+            }
+            block.call(*wrapped_args)
+          rescue Exception  => e
+            error_message_str = "#{e.inspect}\n#{e.backtrace.join("\n")}"
+            puts error_message_str
+            _add_error(error_message_str)
+          end
         }
       end
 

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'droiuby'
-  s.version     = '0.2.8'
+  s.version     = '0.2.9'
   s.date        = '2014-03-26'
   s.summary     = "Droiuby GEM"
   s.description = "Android app development and rapid prototyping using Ruby"
@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rubyzip", [">= 1.0.0"]
   s.add_runtime_dependency "multipart-post", [">= 0"]
   s.add_runtime_dependency "properties-ruby", [">= 0"]
+  s.add_runtime_dependency "nokogiri", [">= 0"]
   s.post_install_message = "Droiuby Gem Installed!\n\nPost Install work:\n\n" + "1.Go install the droiuby development app on your phone here: https://play.google.com/store/apps/details?id=com.droiuby.application\n" +
      "2. Download the android sdk (http://developer.android.com/sdk/index.html)\n" +
      "3. Setup your PATH to include <sdk directory>/sdk/platform-tools (make sure adb works)\n" +
