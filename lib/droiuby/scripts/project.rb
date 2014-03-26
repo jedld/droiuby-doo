@@ -27,6 +27,26 @@ class Project < Thor
       end
       device_ip
     end
+
+    def ignore_path?(fpath)
+        [/^build/, /^project/, /^vendor\/cache/, /^vendor\/(.*)\/tasks/,
+          /^vendor\/(.*)\/ext/, /^vendor\/(.*)\/test/, /^vendor\/(.*)\/port/,
+          /^vendor\/(.*)\/bin/].each do |r|
+          return true if fpath.match(r)
+        end
+        return false
+    end
+
+    def get_connected_devices
+      begin
+        output = `adb devices`
+        lines = output.split("\n")
+        lines.shift 1
+        lines.reject { |line| line.strip.empty? }.collect { |line| line.split(' ').first }
+      rescue Errno::ENOENT => e
+        []
+      end
+    end
   }
 
 
@@ -171,10 +191,17 @@ class Project < Thor
   end
 
 
-  desc "create NAME [WORKSPACE_DIR]","create a new droiuby project with NAME"
+  desc "create PROJECT_NAME [APP_NAME] [WORKSPACE_DIR]","create a new droiuby project with NAME"
 
-  def create(name, output_dir = 'projects')
+  def create(name, app_name = :prompt, output_dir = 'projects')
     @name = name
+    if app_name.nil?
+      @app_name = app_name
+    elsif app_name == :prompt
+      say("Please enter the display name for your app (Used for app launcher and Title):")
+      @app_name = ask("Display Name: ")
+    end
+
     @description = name
     @launcher_icon = ''
     @base_url = ''
@@ -356,11 +383,15 @@ class Project < Thor
         package_name = element['package']
       end
 
-      `ant debug install`
-
-      say "Starting activity #{package_name}"
-      
-      `adb shell am start -W -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
+      say "running ant debug install"
+      if !get_connected_devices.empty?
+        puts `ant debug install`
+        say "Starting activity #{package_name}"
+        `adb shell am start  -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
+      else
+        say "No device connected. will just build the project"
+        puts `ant debug`
+      end
     else
       upload name, device_ip, source_dir
     end
@@ -408,8 +439,7 @@ class Project < Thor
       FileUtils.rm archive, :force=>true
 
       Zip::File.open(archive, Zip::File::CREATE) do |zipfile|
-        Dir.glob("**{,/*/**}/*.*").reject{ |f| f==archive ||
-            f.match(/^build/) || f.match(/^project/) }.uniq.each do |file|
+        Dir.glob("**{,/*/**}/*.*").reject{ |f| f==archive || ignore_path?(f) }.uniq.each do |file|
           say_status 'adding', file
           begin
             zipfile.add(file, file)

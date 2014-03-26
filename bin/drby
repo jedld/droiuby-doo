@@ -57,7 +57,14 @@ case command
         puts "Usage: drby new PROJECT_NAME [options]"
         exit(1)
     end
-    project.create(project_name,'')
+    
+    app_name = if $app_name.nil?
+              :prompt
+            else
+              $app_name
+            end
+
+    project.create(project_name, app_name, '')
   when 'reload'
     project_name = ARGV[1]
     project.package(project_name, nil, 'true')
