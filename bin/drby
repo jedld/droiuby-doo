@@ -5,6 +5,7 @@ require "droiuby"
 require 'optparse'
 require 'ripper'
 require "readline"
+require 'json'
 
 $droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
 $device_ip = ENV['DROIUBY_DEVICE'] || nil
@@ -57,7 +58,7 @@ case command
         puts "Usage: drby new PROJECT_NAME [options]"
         exit(1)
     end
-    
+
     app_name = if $app_name.nil?
               :prompt
             else
