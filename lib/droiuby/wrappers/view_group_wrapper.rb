@@ -19,7 +19,7 @@ class ViewGroupWrapper < ViewWrapper
     end
     after_partial_setup(self)
   end
-  
+
   def <<(markup_or_view)
     append(markup_or_view)
   end
@@ -34,6 +34,10 @@ class ViewGroupWrapper < ViewWrapper
 
   def count
     @view.getChildCount
+  end
+
+  def remove_all_views
+    @view.removeAllViews
   end
 
   def children
