@@ -98,6 +98,14 @@ def set_content_view(view = nil)
   end
 end
 
+def template(url)
+  async.perform {
+
+  }.done { |result|
+
+  }
+end
+
 def render(url, params = {})
   http_method = Java::com.droiuby.client.core.utils.Utils::HTTP_GET
   if params[:method] && (params[:method] == :post)
