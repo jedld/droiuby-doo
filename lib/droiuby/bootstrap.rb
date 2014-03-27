@@ -91,6 +91,10 @@ end
 def set_content_view(view = nil)
   if view.nil?
     Java::com.droiuby.client.core.DroiubyLauncher.setPage(_current_activity, _execution_bundle, _current_page)
+  elsif view.kind_of? Integer
+    _current_activity.setContentView(view)
+  elsif view.kind_of? String
+    _current_activity.setContentView( V(view) )
   end
 end
 
@@ -218,6 +222,9 @@ def Android
 end
 
 def V(selectors = nil)
+  
+  return _R(selectors) if _activity_builder.nil?
+
   if selectors.nil? # Get root node if nil
     view = _activity_builder.getRootView
   elsif (selectors == 'top')
