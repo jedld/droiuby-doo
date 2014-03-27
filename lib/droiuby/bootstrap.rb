@@ -222,7 +222,7 @@ def Android
 end
 
 def V(selectors = nil)
-  
+
   return _R(selectors) if _activity_builder.nil?
 
   if selectors.nil? # Get root node if nil
