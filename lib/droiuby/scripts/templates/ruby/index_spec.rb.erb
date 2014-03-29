@@ -1,5 +1,16 @@
-require 'spec/spec_helper'
+require 'spec_helper'
 
 describe Index do
+
+  context "#on_create" do
+
+    before do
+      @instance = described_class.new
+    end
+
+    it "sets up the activity" do
+      @instance.on_create
+    end
+  end
 
 end
