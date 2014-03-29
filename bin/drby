@@ -10,13 +10,16 @@ require 'json'
 $droiuby_host = ENV['DROIUBY_HOST'] || '10.0.2.2'
 $device_ip = ENV['DROIUBY_DEVICE'] || nil
 $app_name = nil
+$no_project = false
+$show_help = false
+$ant_args = nil
 
 options = OptionParser.new do |o|
   o.banner =
 "Usage: drby autostart true|false INSTANCE_NAME [options] # Set specified instance to start on droiuby launch
        drby console [options]                                  # Launch an interactive console to the target Android Device running Droiuby
        drby framework update  [FOLDER] [options]               # updates the droiuby framework from folder (default src_framework)
-       drby go   [PROJECT_NAME] [options]                      # packages an app and uploads to an Android Device running Droiuby
+       drby go   [PROJECT_NAME] [options] [--no-project]       # packages an app and uploads to an Android Device running Droiuby
        drby list [options]                                     # Lists the app instances running on the phone
        drby live [PROJECT_NAME] [options]                      # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                         # Create a new project
@@ -27,12 +30,16 @@ options = OptionParser.new do |o|
        drby switch INSTANCE_NAME [options]                     # Switch to the specified instance
        drby bundle                                             # unzips all gems in vendor/cache for deployment to droiuby\n"
 
+
   o.separator ""
   o.separator "options:"
+  o.on('-X','--ant-args','additional params to pass to ant') { |b| $ant_args = b}
+  o.on('-h','--help','show this help screen') {|b| $show_help = true}
   o.on('-n','--name app_name','The name of the app that appears in the launcher') {|b| $app_name =b }
   o.on('-p','--package java_package','The java package name to use') {|b| $java_package = b}
   o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
   o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
+  o.on('-P','--no-project','Tells drby go to ignore the android project if present') {|b| $no_project = true}
   o.parse!
 end
 
@@ -174,7 +181,7 @@ case command
       end
     end
 
-    project.execute(project_name, $device_ip, $droiuby_host)
+    project.execute(project_name, $device_ip, $droiuby_host, $no_project, $ant_args)
   when 'bundle'
     project.bundle
   when 'live'

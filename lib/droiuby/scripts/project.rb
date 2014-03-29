@@ -78,15 +78,15 @@ class Project < Thor
   desc "list [DEVICE IP]","List running app instances"
   def list(device_ip = nil)
     device_ip = map_device_ip(device_ip)
-        url_str = "http://#{device_ip}:4000/control?cmd=list"
-        puts url_str
-        uri = URI.parse(url_str)
-        # Shortcut
-        response = Net::HTTP.get_response(uri)
-        result = JSON.parse(response.body)
-        result['list'].split(',').each do |item|
-          puts item
-        end
+    url_str = "http://#{device_ip}:4000/control?cmd=list"
+    puts url_str
+    uri = URI.parse(url_str)
+    # Shortcut
+    response = Net::HTTP.get_response(uri)
+    result = JSON.parse(response.body)
+    result['list'].split(',').each do |item|
+      puts item
+    end
   end
 
   desc "cmd [command] [DEVICE_IP]", "Send command to a Droiuby instance"
@@ -218,6 +218,9 @@ class Project < Thor
     template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
     template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
     template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+    template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
+    template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
+
     empty_directory File.join(dest_folder,"lib")
     say "running bundle install"
     Dir.chdir dest_folder
@@ -358,8 +361,8 @@ class Project < Thor
     upload 'framework', device_ip, File.join(Dir.pwd,"framework_src"), true
   end
 
-  desc "execute NAME DEVICE_IP [WORKSPACE_DIR]","package and execute a droiuby application to target device running droiuby client"
-  def execute(name, device_ip, source_dir = 'projects')
+  desc "execute NAME DEVICE_IP [WORKSPACE_DIR] [IGNORE_PROJECT] [ANT_ARGS]","package and execute a droiuby application to target device running droiuby client"
+  def execute(name, device_ip, source_dir = 'projects', ignore_project = false, ant_args = nil)
 
     package name, source_dir, "true"
 
@@ -373,7 +376,7 @@ class Project < Thor
     project_directory = File.join(src_dir,'project')
 
     say "exsits? #{project_directory}"
-    if File.exists? project_directory
+    if !ignore_project && File.exists?(project_directory)
       say "Android Project exists. Building debug project instead ..."
       Dir.chdir(project_directory)
       doc = Nokogiri.XML(File.read('AndroidManifest.xml'))
@@ -390,7 +393,11 @@ class Project < Thor
         `adb shell am start  -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
       else
         say "No device connected. will just build the project"
-        puts `ant debug`
+        if ant_args.nil?
+          puts `ant debug`
+        else
+          puts `ant #{ant_args}`
+        end
       end
     else
       upload name, device_ip, source_dir

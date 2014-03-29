@@ -57,8 +57,9 @@ chdir to your target project and
 
     ~ $ drby standalone --package com.sample.helloworld
 
-This will create an android project at hello_world/project. You can then open
-this using Android Developer Tools.
+This will create an android project at hello_world/project. `drby go` will detect if
+you have a project and automatically invoke ant to build and install it. Alternatively,
+you can then open this using Android Developer Tools and build it normally using eclipse.
 
 Diving in
 ---------
@@ -312,7 +313,7 @@ Sample Applications
 
 Sample apps can be found here:
 
-    git@github.com:jedld/droiuby_smples.git
+    https://github.com/jedld/droiuby_samples
 
 Logs
 ====
