@@ -23,6 +23,7 @@ options = OptionParser.new do |o|
        drby list [options]                                     # Lists the app instances running on the phone
        drby live [PROJECT_NAME] [options]                      # runs a web instance of the app and tells Droiuby to load it.
        drby new PROJECT_NAME [options]                         # Create a new project
+       drby new hybrid PROJECT_NAME [options]                  # Create a new hybrid project
        drby pack [PROJECT_NAME] [options]                      # zips and packages an app
        drby standalone [PROJECT_NAME] --package JAVA_PACKAGE   # creates a standalone android project for the current app
             [--name APP_NAME]
@@ -58,7 +59,14 @@ project = Project.new
 
 case command
   when 'new'
-    project_name = ARGV[1]
+    n = 1
+    hybrid_mode = false
+    if ARGV[n] == 'hybrid'
+      n+=1
+      hybrid_mode = true
+    end
+
+    project_name = ARGV[n]
 
     if project_name.blank?
         puts "PROJECT_NAME is required"

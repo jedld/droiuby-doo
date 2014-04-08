@@ -140,7 +140,7 @@ class Project < Thor
   end
 
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
-  def standalone(name, package_name, title = nil, output_dir = 'projects')
+  def standalone(name, package_name, title = nil, output_dir = 'projects', repository = nil, branch = nil)
 
     if output_dir.blank?
       output_dir = Dir.pwd
@@ -160,12 +160,19 @@ class Project < Thor
 
     end
 
-    template_repository = ENV['droiuby_template'] || 'https://github.com/jedld/droiuby-template.git'
+    template_repository = ENV['droiuby_template'] || repository || 'https://github.com/jedld/droiuby-template.git'
     template_directory = File.expand_path('~/.droiuby/android_project_templates')
 
     unless File.exists?(template_directory)
       say "no cached copy yet. obtaining template project from repository"
-      `git clone --depth 1 #{template_repository} #{template_directory}`
+
+      branch = unless branch.nil?
+        "-b #{branch}"
+      else
+        ""
+      end
+      
+      `git clone #{branch} --depth 1 #{template_repository} #{template_directory}`
     else
       say "checking for template updates..."
       Dir.chdir template_directory
@@ -193,7 +200,7 @@ class Project < Thor
 
   desc "create PROJECT_NAME [APP_NAME] [WORKSPACE_DIR]","create a new droiuby project with NAME"
 
-  def create(name, app_name = :prompt, output_dir = 'projects')
+  def create(name, app_name = :prompt, output_dir = 'projects', type = 'droiuby')
     @name = name
     if app_name.nil?
       @app_name = app_name
@@ -205,7 +212,14 @@ class Project < Thor
     @description = name
     @launcher_icon = ''
     @base_url = ''
-    @main_xml = File.join("app","views","index.xml")
+    if type == 'droiuby'
+      @main_xml = File.join("app","views","index.xml")
+    elsif type == 'hybrid'
+      @main_xml = File.join("app","activities","index.rb")
+    else
+      say_error "Invalid project type specified"
+      exit(1);
+    end
 
     if output_dir.blank?
       output_dir = Dir.pwd
@@ -215,7 +229,11 @@ class Project < Thor
     template File.join('ruby','Gemfile.erb'), File.join(dest_folder,"Gemfile")
     template File.join('ruby','config.droiuby.erb'), File.join(dest_folder,"config.droiuby")
     template File.join('ruby','gitignore.erb'), File.join(dest_folder,".gitignore")
-    template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
+
+    if type == 'droiuby'
+      template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
+    end
+
     template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
     template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
     template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
@@ -225,7 +243,10 @@ class Project < Thor
     say "running bundle install"
     Dir.chdir dest_folder
     `bundle install`
-    bundle
+
+    if type == 'hybrid'
+      standalone(name, :prompt, nil, output_dir)
+    end
   end
 
   desc "package NAME [WORKSPACE_DIR] [true|false]","package a project"
