@@ -2,13 +2,43 @@ $:.unshift Dir.pwd
 
 require File.join(File.dirname(__FILE__),'loader')
 $autoload_path << File.join('app','activities')
+$working_directory = Dir.pwd
 
+Dir[File.join("#{File.dirname(__FILE__)}",'mock_objects','java_classes',"*.rb")].each {|f| require f}
+Dir[File.join("#{File.dirname(__FILE__)}",'mock_objects',"*.rb")].each {|f| require f}
+
+
+class Java
+
+  class Stubber
+    def RubyContainerPayload
+      MockObjects::JavaClasses::RubyContainerPayload.new
+    end
+  end
+
+  def self.droiuby
+    self
+  end
+
+  def self.client
+    self
+  end
+
+  def self.core
+    Stubber.new
+  end
+
+  def self.com
+    self
+  end
+
+end
 
 #Droiuby Mock Framework class
 class DroiubyFramework
 
   def before_activity_setup
-    fname = "#{File.dirname(__FILE__)}/../bootstrap.rb"
+    fname = "#{File.dirname(__FILE__)}/bootstrap.rb"
     @bootstrap = @bootstrap || File.read(fname)
     eval(@bootstrap, TOPLEVEL_BINDING, fname, __LINE__)
   end
@@ -59,3 +89,23 @@ class DroiubyFramework
 end
 
 $framework = DroiubyFramework.new
+
+def set_mock_environment(environment = nil)
+  puts "new environment"
+  if environment.nil?
+  doc = Nokogiri.XML(File.read('config.droiuby'))
+
+    title = ''
+    params = {}
+    doc.css('app_descriptor').tap do |e|
+      %w[name description base_url main framework].each do |attr|
+        params[attr.to_sym] = e.css(attr).first.content
+      end
+    end
+
+    $mock_environment = MockEnvironment.new(params)
+  else
+    $mock_environment = environment
+  end
+  $mock_environment
+end
