@@ -251,7 +251,11 @@ class Project < Thor
     end
 
     template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
-    template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+    if type == 'droiuby'
+      template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+    elsif type == 'hybrid'
+      template File.join('ruby','index-hybrid.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+    end
     template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
     template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
 
