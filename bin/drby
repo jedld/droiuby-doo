@@ -80,7 +80,7 @@ case command
               $app_name
             end
 
-    project.create(project_name, app_name, '')
+    project.create(project_name, app_name, '', hybrid_mode ? 'hybrid' : 'droiuby')
   when 'reload'
     project_name = ARGV[1]
     project.package(project_name, nil, 'true')

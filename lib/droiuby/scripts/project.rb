@@ -146,9 +146,18 @@ class Project < Thor
       output_dir = Dir.pwd
     end
 
-    dest_folder = File.join(output_dir,"#{name}")
+    if package_name == :prompt
+      say("Please enter the Java Package Name to be used for your app (e.g. com.awesome.sample ):")
+      package_name = ask("Package Name: ")
+    end
 
-    Dir.chdir dest_folder
+    dest_folder = nil
+    unless name.nil?
+      dest_folder = File.join(output_dir,"#{name}")
+      Dir.chdir dest_folder
+    else
+      dest_folder = Dir.pwd
+    end
 
     if title.nil?
 
@@ -161,7 +170,7 @@ class Project < Thor
     end
 
     template_repository = ENV['droiuby_template'] || repository || 'https://github.com/jedld/droiuby-template.git'
-    template_directory = File.expand_path('~/.droiuby/android_project_templates')
+    template_directory = File.expand_path("~/.droiuby/android_project_templates.#{branch.nil? ? 'master' : branch}")
 
     unless File.exists?(template_directory)
       say "no cached copy yet. obtaining template project from repository"
@@ -171,7 +180,7 @@ class Project < Thor
       else
         ""
       end
-      
+
       `git clone #{branch} --depth 1 #{template_repository} #{template_directory}`
     else
       say "checking for template updates..."
@@ -185,7 +194,14 @@ class Project < Thor
 
     Dir.chdir File.join(dest_folder,'project')
 
+    say "creating android porject in #{dest_folder}"
     require "#{File.join(dest_folder,'project','init.rb')}"
+
+    dest_folder = if dest_folder.end_with? '/'
+      dest_folder
+    else
+      "#{dest_folder}/"
+    end
 
     archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
 
@@ -240,13 +256,16 @@ class Project < Thor
     template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
 
     empty_directory File.join(dest_folder,"lib")
-    say "running bundle install"
+
     Dir.chdir dest_folder
+    if type == 'hybrid'
+      standalone(nil, :prompt, nil,  nil, nil, 'hybrid-mode')
+    end
+
+    say "running bundle install"
     `bundle install`
 
-    if type == 'hybrid'
-      standalone(name, :prompt, nil, output_dir)
-    end
+
   end
 
   desc "package NAME [WORKSPACE_DIR] [true|false]","package a project"
