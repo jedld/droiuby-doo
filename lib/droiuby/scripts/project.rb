@@ -47,6 +47,85 @@ class Project < Thor
         []
       end
     end
+
+    def template_generator(name, package_name, title = nil, output_dir = 'projects', options = {})
+
+      respository = options[:repository] || nil
+      branch = optionts[:branch] || nil
+
+      if output_dir.blank?
+        output_dir = Dir.pwd
+      end
+
+      if package_name == :prompt
+        say("Please enter the Java Package Name to be used for your app (e.g. com.awesome.sample ):")
+        package_name = ask("Package Name: ")
+      end
+
+      dest_folder = nil
+      unless name.nil?
+        dest_folder = File.join(output_dir,"#{name}")
+        Dir.chdir dest_folder
+      else
+        dest_folder = Dir.pwd
+      end
+
+      if title.nil?
+
+        doc = Nokogiri.XML(File.read('config.droiuby'))
+
+        doc.css('app_descriptor name').each do |element|
+          title = element.content
+        end
+
+      end
+
+      template_repository = ENV['droiuby_template'] || repository || 'https://github.com/jedld/droiuby-template.git'
+      template_directory = File.expand_path("~/.droiuby/android_project_templates.#{branch.nil? ? 'master' : branch}")
+
+      unless File.exists?(template_directory)
+        say "no cached copy yet. obtaining template project from repository"
+
+        branch = unless branch.nil?
+          "-b #{branch}"
+        else
+          ""
+        end
+
+        `git clone #{branch} --depth 1 #{template_repository} #{template_directory}`
+      else
+        say "checking for template updates..."
+        Dir.chdir template_directory
+        `git pull`
+      end
+
+      #prepare
+      directory template_directory, File.join(dest_folder,'project')
+      remove_dir "#{File.join(dest_folder,'project')}/.git"
+
+      Dir.chdir File.join(dest_folder,'project')
+
+      say "creating android porject in #{dest_folder}"
+      require "#{File.join(dest_folder,'project','init.rb')}"
+
+      dest_folder = if dest_folder.end_with? '/'
+        dest_folder
+      else
+        "#{dest_folder}/"
+      end
+
+      archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
+
+      init = Init.new
+      init.options = options[:xoptions]
+      init.init(package_name, "#{archive_name}.zip", title)
+      Dir.chdir dest_folder
+      bundle
+      package(name, '', "true")
+      say "Your android project is located at #{dest_folder}/project."
+    end
+
+
   }
 
 
@@ -140,77 +219,11 @@ class Project < Thor
   end
 
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
+  method_option :xoptions, :type => :hash, :default = {}
   def standalone(name, package_name, title = nil, output_dir = 'projects', repository = nil, branch = nil)
-
-    if output_dir.blank?
-      output_dir = Dir.pwd
-    end
-
-    if package_name == :prompt
-      say("Please enter the Java Package Name to be used for your app (e.g. com.awesome.sample ):")
-      package_name = ask("Package Name: ")
-    end
-
-    dest_folder = nil
-    unless name.nil?
-      dest_folder = File.join(output_dir,"#{name}")
-      Dir.chdir dest_folder
-    else
-      dest_folder = Dir.pwd
-    end
-
-    if title.nil?
-
-      doc = Nokogiri.XML(File.read('config.droiuby'))
-
-      doc.css('app_descriptor name').each do |element|
-        title = element.content
-      end
-
-    end
-
-    template_repository = ENV['droiuby_template'] || repository || 'https://github.com/jedld/droiuby-template.git'
-    template_directory = File.expand_path("~/.droiuby/android_project_templates.#{branch.nil? ? 'master' : branch}")
-
-    unless File.exists?(template_directory)
-      say "no cached copy yet. obtaining template project from repository"
-
-      branch = unless branch.nil?
-        "-b #{branch}"
-      else
-        ""
-      end
-
-      `git clone #{branch} --depth 1 #{template_repository} #{template_directory}`
-    else
-      say "checking for template updates..."
-      Dir.chdir template_directory
-      `git pull`
-    end
-
-    #prepare
-    directory template_directory, File.join(dest_folder,'project')
-    remove_dir "#{File.join(dest_folder,'project')}/.git"
-
-    Dir.chdir File.join(dest_folder,'project')
-
-    say "creating android porject in #{dest_folder}"
-    require "#{File.join(dest_folder,'project','init.rb')}"
-
-    dest_folder = if dest_folder.end_with? '/'
-      dest_folder
-    else
-      "#{dest_folder}/"
-    end
-
-    archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
-
-    init = Init.new
-    init.init(package_name, "#{archive_name}.zip", title)
-    Dir.chdir dest_folder
-    bundle
-    package(name, '', "true")
-    say "Your android project is located at #{dest_folder}/project."
+    options[:repository] = respository
+    options[:branch] = branch
+    template_generator(name, package_name, title , output_dir , options)
   end
 
 
@@ -264,6 +277,7 @@ class Project < Thor
     Dir.chdir dest_folder
     if type == 'hybrid'
       standalone(nil, :prompt, nil,  nil, nil, 'hybrid-mode')
+      template_generator(nil, :prompt, nil,  nil, nil, nil, {xoptions: {hybrid: true}})
     end
 
     say "running bundle install"
