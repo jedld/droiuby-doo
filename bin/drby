@@ -61,6 +61,12 @@ case command
   when 'new'
     n = 1
     hybrid_mode = false
+    standalone = false
+    if ARGV[n] == 'standalone'
+      n+=1
+      standalone = true
+    end
+
     if ARGV[n] == 'hybrid'
       n+=1
       hybrid_mode = true
