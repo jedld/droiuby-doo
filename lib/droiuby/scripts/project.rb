@@ -48,67 +48,66 @@ class Project < Thor
       end
     end
 
-def project_generator(name, app_name = :prompt, output_dir = 'projects', opt={})
-  @name = name
-  if app_name.nil?
-    @app_name = app_name
-  elsif app_name == :prompt
-    say("Please enter the display name for your app (Used for app launcher and Title):")
-    @app_name = ask("Display Name: ")
-  end
+    def project_generator(name, app_name = :prompt, output_dir = 'projects', opt={})
+      @name = name
+      if app_name.nil?
+        @app_name = app_name
+      elsif app_name == :prompt
+        say("Please enter the display name for your app (Used for app launcher and Title):")
+        @app_name = ask("Display Name: ")
+      end
 
-  @description = name
-  @launcher_icon = ''
-  @base_url = ''
-  if opt[:type] == :droiuby
-    @main_xml = File.join("app","views","index.xml")
-  elsif opt[:type] == :hybrid
-    @main_xml = File.join("app","activities","index.rb")
-  else
-    say_error "Invalid project type specified"
-    exit(1);
-  end
+      @description = name
+      @launcher_icon = ''
+      @base_url = ''
+      if opt[:type] == :droiuby
+        @main_xml = File.join("app","views","index.xml")
+      elsif opt[:type] == :hybrid
+        @main_xml = File.join("app","activities","index.rb")
+      else
+        say :red, "Invalid project type specified #{opt[:type]}"
+        exit(1);
+      end
 
-  if output_dir.blank?
-    output_dir = Dir.pwd
-  end
+      if output_dir.blank?
+        output_dir = Dir.pwd
+      end
 
-  dest_folder = File.join(output_dir,"#{name}")
-  template File.join('ruby','Gemfile.erb'), File.join(dest_folder,"Gemfile")
-  template File.join('ruby','config.droiuby.erb'), File.join(dest_folder,"config.droiuby")
-  template File.join('ruby','gitignore.erb'), File.join(dest_folder,".gitignore")
+      dest_folder = File.join(output_dir,"#{name}")
+      template File.join('ruby','Gemfile.erb'), File.join(dest_folder,"Gemfile")
+      template File.join('ruby','config.droiuby.erb'), File.join(dest_folder,"config.droiuby")
+      template File.join('ruby','gitignore.erb'), File.join(dest_folder,".gitignore")
 
-  if opt[:type] == :droiuby
-    template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
-  end
+      if opt[:type] == :droiuby
+        template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
+      end
 
-  template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
-  if opt[:type] == :droiuby
-    template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
-  elsif opt[:type] == :hybrid
-    template File.join('ruby','index-hybrid.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
-  end
-  template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
-  template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
+      template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
+      if opt[:type] == :droiuby
+        template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+      elsif opt[:type] == :hybrid
+        template File.join('ruby','index-hybrid.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
+      end
+      template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
+      template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
 
-  empty_directory File.join(dest_folder,"lib")
+      empty_directory File.join(dest_folder,"lib")
 
-  Dir.chdir dest_folder
-  if opt[:type] == :hybrid
-    template_generator(nil, :prompt, nil,  nil, nil, nil, {xoptions: {hybrid: true}})
-  elsif opt[:standalone] == true
-    template_generator(nil, :prompt, nil,  nil, nil, nil)
-  end
+      Dir.chdir dest_folder
+      if opt[:type] == :hybrid
+        template_generator(nil, :prompt, nil,  nil, {xoptions: {hybrid: true}})
+      elsif opt[:standalone] == true
+        template_generator(nil, :prompt, nil,  nil, nil, nil)
+      end
 
-  say "running bundle install"
-  `bundle install`
+      say "running bundle install"
+      `bundle install`
+    end
 
-
-end
     def template_generator(name, package_name, title = nil, output_dir = 'projects', options = {})
 
-      respository = options[:repository] || nil
-      branch = optionts[:branch] || nil
+      repository = options[:repository] || nil
+      branch = options[:branch] || nil
 
       if output_dir.blank?
         output_dir = Dir.pwd
@@ -276,7 +275,7 @@ end
   end
 
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
-  method_option :xoptions, :type => :hash, :default = {}
+  method_option :xoptions, :type => :hash, :default => {}
   def standalone(name, package_name, title = nil, output_dir = 'projects', repository = nil, branch = nil)
     options[:repository] = respository
     options[:branch] = branch
@@ -287,60 +286,8 @@ end
   desc "create PROJECT_NAME [APP_NAME] [WORKSPACE_DIR]","create a new droiuby project with NAME"
 
   def create(name, app_name = :prompt, output_dir = 'projects', type = 'droiuby')
-    @name = name
-    if app_name.nil?
-      @app_name = app_name
-    elsif app_name == :prompt
-      say("Please enter the display name for your app (Used for app launcher and Title):")
-      @app_name = ask("Display Name: ")
-    end
-
-    @description = name
-    @launcher_icon = ''
-    @base_url = ''
-    if type == 'droiuby'
-      @main_xml = File.join("app","views","index.xml")
-    elsif type == 'hybrid'
-      @main_xml = File.join("app","activities","index.rb")
-    else
-      say_error "Invalid project type specified"
-      exit(1);
-    end
-
-    if output_dir.blank?
-      output_dir = Dir.pwd
-    end
-
-    dest_folder = File.join(output_dir,"#{name}")
-    template File.join('ruby','Gemfile.erb'), File.join(dest_folder,"Gemfile")
-    template File.join('ruby','config.droiuby.erb'), File.join(dest_folder,"config.droiuby")
-    template File.join('ruby','gitignore.erb'), File.join(dest_folder,".gitignore")
-
-    if type == 'droiuby'
-      template File.join('ruby','index.xml.erb'), File.join(dest_folder,"app","views","index.xml")
-    end
-
-    template File.join('ruby','application.css.erb'), File.join(dest_folder,"app","views","styles","application.css")
-    if type == 'droiuby'
-      template File.join('ruby','index.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
-    elsif type == 'hybrid'
-      template File.join('ruby','index-hybrid.rb.erb'), File.join(dest_folder,"app","activities","index.rb")
-    end
-    template File.join('ruby','index_spec.rb.erb'), File.join(dest_folder,"spec","activities","index_spec.rb")
-    template File.join('ruby','spec_helper.rb.erb'), File.join(dest_folder,"spec","spec_helper.rb")
-
-    empty_directory File.join(dest_folder,"lib")
-
-    Dir.chdir dest_folder
-    if type == 'hybrid'
-      standalone(nil, :prompt, nil,  nil, nil, 'hybrid-mode')
-      template_generator(nil, :prompt, nil,  nil, nil, nil, {xoptions: {hybrid: true}})
-    end
-
-    say "running bundle install"
-    `bundle install`
-
-
+      opt =  {type:  type.to_sym}
+      project_generator(name, app_name, output_dir, opt)
   end
 
   desc "package NAME [WORKSPACE_DIR] [true|false]","package a project"

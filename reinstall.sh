@@ -1,7 +1,7 @@
 #!/bin/sh
 
 rm *.gem
-gem uninstall droiuby
+gem uninstall droiuby -a -x
 gem build droiuby.gemspec
 
 FILENAME=$(ls -1 | grep *.gem | tail -1)
