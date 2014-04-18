@@ -13,6 +13,7 @@ $app_name = nil
 $no_project = false
 $show_help = false
 $ant_args = nil
+$repo, $branch = nil
 
 options = OptionParser.new do |o|
   o.banner =
@@ -40,6 +41,8 @@ options = OptionParser.new do |o|
   o.on('-p','--package java_package','The java package name to use') {|b| $java_package = b}
   o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
   o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
+  o.on('-r','--repo repo_git_url','The git repository to use for project templates') { |b| $repo = b }
+  o.on('-b','--branch repo_git_branch','The git branch to use for templates') { |b| $branch = b }
   o.on('-P','--no-project','Tells drby go to ignore the android project if present') {|b| $no_project = true}
   o.parse!
 end
@@ -86,7 +89,7 @@ case command
               $app_name
             end
 
-    opt = {}
+    opt = {repository: $repo, branch: $branch}
     opt[:type] = if hybrid_mode
       :hybrid
     elsif standalone
@@ -155,7 +158,7 @@ case command
       puts '--package [JAVA_PACKAGE] is required.'
       exit(1)
     end
-    project.standalone(project_name, $java_package, $app_name,'')
+    project.standalone(project_name, $java_package, $app_name,'', $repo, $branch)
   when 'switch'
     instance_name = nil
     unless ARGV[1].blank?

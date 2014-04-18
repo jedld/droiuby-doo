@@ -95,9 +95,9 @@ class Project < Thor
 
       Dir.chdir dest_folder
       if opt[:type] == :hybrid
-        template_generator(nil, :prompt, nil,  nil, {xoptions: {hybrid: true}})
+        template_generator(nil, :prompt, nil,  nil, {xoptions: {hybrid: true}}.merge(opt))
       elsif opt[:type] == :standalone
-        template_generator(nil, :prompt, nil,  nil)
+        template_generator(nil, :prompt, nil,  nil, opt)
       end
 
       say "running bundle install"
@@ -106,8 +106,8 @@ class Project < Thor
 
     def template_generator(name, package_name, title = nil, output_dir = 'projects', opt = {})
 
-      repository = opt[:repository] || nil
-      branch = opt[:branch] || nil
+      repository = opt[:repository]
+      branch = opt[:branch]
 
       if output_dir.blank?
         output_dir = Dir.pwd
@@ -137,7 +137,14 @@ class Project < Thor
       end
 
       template_repository = ENV['droiuby_template'] || repository || 'https://github.com/jedld/droiuby-template.git'
-      template_directory = File.expand_path("~/.droiuby/android_project_templates.#{branch.nil? ? 'master' : branch}")
+
+      say "using repository #{template_repository} ..."
+
+      template_namespace = URI.parse(template_repository).path.sub('.git','')
+
+      template_directory = File.expand_path(File.join("~/.droiuby/android_project_templates", "#{template_namespace}.#{branch.nil? ? 'master' : branch}"))
+
+      say "checking out to #{template_directory}"
 
       unless File.exists?(template_directory)
         say "no cached copy yet. obtaining template project from repository"
@@ -161,7 +168,7 @@ class Project < Thor
 
       Dir.chdir File.join(dest_folder,'project')
 
-      say "creating android porject in #{dest_folder}"
+      say "creating android project in #{dest_folder}"
       require "#{File.join(dest_folder,'project','init.rb')}"
 
       dest_folder = if dest_folder.end_with? '/'
@@ -173,7 +180,7 @@ class Project < Thor
       archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
 
       init = Init.new
-      init.options = options[:xoptions]
+      init.options = options[:xoptions] || {}
       init.init(package_name, "#{archive_name}.zip", title)
       Dir.chdir dest_folder
       bundle
