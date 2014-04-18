@@ -19,6 +19,7 @@ module MissingHandler
       require_path = File.join(*path_array)
 
       begin
+        puts "require #{require_path}"
         require require_path
         klass = const_get(name)
         return klass if klass

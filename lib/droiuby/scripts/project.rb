@@ -60,7 +60,7 @@ class Project < Thor
       @description = name
       @launcher_icon = ''
       @base_url = ''
-      if opt[:type] == :droiuby
+      if opt[:type] == :droiuby || opt[:type] == :standalone
         @main_xml = File.join("app","views","index.xml")
       elsif opt[:type] == :hybrid
         @main_xml = File.join("app","activities","index.rb")
@@ -96,18 +96,18 @@ class Project < Thor
       Dir.chdir dest_folder
       if opt[:type] == :hybrid
         template_generator(nil, :prompt, nil,  nil, {xoptions: {hybrid: true}})
-      elsif opt[:standalone] == true
-        template_generator(nil, :prompt, nil,  nil, nil, nil)
+      elsif opt[:type] == :standalone
+        template_generator(nil, :prompt, nil,  nil)
       end
 
       say "running bundle install"
       `bundle install`
     end
 
-    def template_generator(name, package_name, title = nil, output_dir = 'projects', options = {})
+    def template_generator(name, package_name, title = nil, output_dir = 'projects', opt = {})
 
-      repository = options[:repository] || nil
-      branch = options[:branch] || nil
+      repository = opt[:repository] || nil
+      branch = opt[:branch] || nil
 
       if output_dir.blank?
         output_dir = Dir.pwd
@@ -287,7 +287,7 @@ class Project < Thor
 
   def create(name, app_name = :prompt, output_dir = 'projects', type = 'droiuby')
       opt =  {type:  type.to_sym}
-      project_generator(name, app_name, output_dir, opt)
+    project_generator(name, app_name, output_dir, opt)
   end
 
   desc "package NAME [WORKSPACE_DIR] [true|false]","package a project"

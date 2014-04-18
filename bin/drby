@@ -86,7 +86,17 @@ case command
               $app_name
             end
 
-    project.create(project_name, app_name, '', hybrid_mode ? 'hybrid' : 'droiuby')
+    opt = {}
+    opt[:type] = if hybrid_mode
+      :hybrid
+    elsif standalone
+      :standalone
+    else
+      :droiuby
+    end
+
+    project.project_generator(project_name, app_name, '', opt)
+
   when 'reload'
     project_name = ARGV[1]
     project.package(project_name, nil, 'true')
