@@ -40,6 +40,7 @@ options = OptionParser.new do |o|
   o.on('-n','--name app_name','The name of the app that appears in the launcher') {|b| $app_name =b }
   o.on('-p','--package java_package','The java package name to use') {|b| $java_package = b}
   o.on('-h','--host HOST_IP','The IP Address of the host computer (for droiuby live mode)') { |b| $droiuby_host = b }
+  o.on('-G','--gradle','Create a gradle android project') { |b| $repo = 'https://github.com/jedld/droiuby-template-gradle.git'}
   o.on('-d','--device DEVICE_IP','The IP Address of the Android Device') { |b| $device_ip = b }
   o.on('-r','--repo repo_git_url','The git repository to use for project templates') { |b| $repo = b }
   o.on('-b','--branch repo_git_branch','The git branch to use for templates') { |b| $branch = b }

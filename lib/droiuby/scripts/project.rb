@@ -180,7 +180,7 @@ class Project < Thor
       archive_name = File.basename(dest_folder.sub!(%r[/$],'')) if archive_name.nil?
 
       init = Init.new
-      init.options = options[:xoptions] || {}
+      init.options = opt[:xoptions] || {}
       init.init(package_name, "#{archive_name}.zip", title)
       Dir.chdir dest_folder
       bundle
@@ -313,7 +313,14 @@ class Project < Thor
     say "exsits? #{project_directory}"
     if File.exists? project_directory
       say "Android Project exists. Updating build inside assets ..."
-      copy_file archive, File.join(project_directory,'assets',File.basename(archive)), force: true
+
+      target_directory = if File.exists?(File.join(project_directory,'build.gradle'))
+        File.join(project_directory,'app','src','main','assets',File.basename(archive))
+      else
+        File.join(project_directory,'assets',File.basename(archive))
+      end
+
+      copy_file archive, target_directory, force: true
     end
   end
 
@@ -448,26 +455,41 @@ class Project < Thor
     if !ignore_project && File.exists?(project_directory)
       say "Android Project exists. Building debug project instead ..."
       Dir.chdir(project_directory)
-      doc = Nokogiri.XML(File.read('AndroidManifest.xml'))
 
-      package_name = nil
-      doc.css('manifest').each do |element|
-        package_name = element['package']
-      end
-
-      say "running ant debug install"
-      if !get_connected_devices.empty?
-        puts `ant debug install`
-        say "Starting activity #{package_name}"
-        `adb shell am start  -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
-      else
-        say "No device connected. will just build the project"
-        if ant_args.nil?
-          puts `ant debug`
+      is_gradle = false
+      #figure out type of project
+        doc = if File.exists?('build.gradle')
+          is_gradle = true
+          Nokogiri.XML(File.read(File.join('app','src','main','AndroidManifest.xml')))
         else
-          puts `ant #{ant_args}`
+          Nokogiri.XML(File.read('AndroidManifest.xml'))
         end
-      end
+
+        package_name = nil
+        doc.css('manifest').each do |element|
+          package_name = element['package']
+        end
+
+        say "running build..."
+        if !get_connected_devices.empty?
+
+          if is_gradle
+            puts `gradle installDebug`
+          else
+            puts `ant debug install`
+          end
+
+          say "Starting activity #{package_name}"
+          `adb shell am start  -S --activity-clear-top --activity-brought-to-front -n #{package_name}/.StartupActivity`
+        else
+          say "No device connected. will just build the project"
+          if ant_args.nil?
+            puts `ant debug`
+          else
+            puts `ant #{ant_args}`
+          end
+        end
+
     else
       upload name, device_ip, source_dir
     end
