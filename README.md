@@ -61,6 +61,10 @@ This will create an android project at hello_world/project. `drby go` will detec
 you have a project and automatically invoke ant to build and install it. Alternatively,
 you can then open this using Android Developer Tools and build it normally using eclipse.
 
+If you use Android Studio, you can generate a gradle project instead
+
+    ~ $ drby standalone --package com.sample.helloworld --gradle
+
 Diving in
 ---------
 
