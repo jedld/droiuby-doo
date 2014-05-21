@@ -122,6 +122,15 @@ case command
         next
       end
 
+      if (buf[0] == '!')
+        filename = buf[1..buf.size]
+        contents = File.read(filename)
+
+        res = JSON.parse(project.file_upload(buf, $device_ip, contents))
+        puts res['result']
+        next
+      end
+
       exit(1) if buf=='exit' || buf=='quit'
 
       begin

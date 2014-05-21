@@ -365,6 +365,19 @@ class Project < Thor
     server.start
   end
 
+  desc "file_upload NAME DEVICE_IP CONTENTS", "uploads a file and assigns it to $file_contents"
+  def file_upload(name, device_ip, contents = '')
+    url_str = "http://#{device_ip}:4000/file_upload"
+    uri = URI.parse(url_str)
+    say "sending content to #{url_str} -> #{uri.host}:#{uri.port}"
+    params = {content: contents}
+    req = Net::HTTP::Post::Multipart.new uri.path, params
+    response = Net::HTTP.start(uri.host, uri.port) do |http|
+      http.request(req)
+    end
+    response.body
+  end
+
   desc "upload NAME DEVICE_IP [WORKSPACE_DIR]","uploads a droiuby application to target device running droiuby client"
 
   def upload(name, device_ip, source_dir = 'projects', framework = false, run = true)
