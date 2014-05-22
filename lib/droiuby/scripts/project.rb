@@ -365,9 +365,11 @@ class Project < Thor
     server.start
   end
 
-  desc "file_upload NAME DEVICE_IP CONTENTS", "uploads a file and assigns it to $file_contents"
-  def file_upload(name, device_ip, contents = '')
-    url_str = "http://#{device_ip}:4000/file_upload"
+  desc "file_upload DEVICE_IP CONTENTS", "uploads a file and assigns it to $file_contents"
+  def file_upload(device_ip, contents = '')
+    device_ip = map_device_ip(device_ip)
+    url_str = "http://#{device_ip}:4000/upload_file"
+    puts "#{url_str}"
     uri = URI.parse(url_str)
     say "sending content to #{url_str} -> #{uri.host}:#{uri.port}"
     params = {content: contents}
