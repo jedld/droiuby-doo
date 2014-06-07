@@ -284,7 +284,7 @@ class Project < Thor
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
   method_option :xoptions, :type => :hash, :default => {}
   def standalone(name, package_name, title = nil, output_dir = 'projects', repository = nil, branch = nil)
-    options[:repository] = respository
+    options[:repository] = repository
     options[:branch] = branch
     template_generator(name, package_name, title , output_dir , options)
   end
