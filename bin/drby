@@ -131,6 +131,12 @@ case command
         next
       end
 
+      if (buf[0] == '?')
+        command = buf[1..buf.size]
+        puts `#{command}`
+        next
+      end
+
       exit(1) if buf=='exit' || buf=='quit'
 
       begin
