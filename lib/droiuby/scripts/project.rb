@@ -284,6 +284,7 @@ class Project < Thor
   desc "standalone NAME [PACKAGE_NAME]", "create an android project for this app with the specified java package name"
   method_option :xoptions, :type => :hash, :default => {}
   def standalone(name, package_name, title = nil, output_dir = 'projects', repository = nil, branch = nil)
+    options = {}
     options[:repository] = repository
     options[:branch] = branch
     template_generator(name, package_name, title , output_dir , options)
@@ -372,7 +373,7 @@ class Project < Thor
     puts "#{url_str}"
     uri = URI.parse(url_str)
     say "sending content to #{url_str} -> #{uri.host}:#{uri.port}"
-    params = {content: contents}
+    params = {content: contents, name: 'upload'}
     req = Net::HTTP::Post::Multipart.new uri.path, params
     response = Net::HTTP.start(uri.host, uri.port) do |http|
       http.request(req)

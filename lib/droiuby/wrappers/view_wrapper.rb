@@ -12,9 +12,9 @@ class ViewWrapper
 
   java_attr_reader :id, :width, :height, :measured_width, :measured_height, :background
   java_attr_writer :selected
-  
+
   java_attr_boolean_reader :selected
-  
+
 
   def initialize(view = nil)
     unless view.nil?
@@ -169,12 +169,14 @@ class ViewWrapper
     end
 
     extra_attributes.each do |attr|
-      data_attribute_list << "#{attr.to_sym}=\"#{p_format(attr,self.send(attr.to_sym))}\""  
+      data_attribute_list << "#{attr.to_sym}=\"#{p_format(attr,self.send(attr.to_sym))}\""
     end
 
     puts "#{spaces}#{self.class.name} id=\"#{id_attr}\" name=\"#{name_attr}\" class=\"#{class_attr}\" #{data_attribute_list.join(' ')}\n"
     self.children.each { |c|
-      c.p_tree(level + 1, extra_attributes)
+      if  c.respond_to? :p_tree
+        c.p_tree(level + 1, extra_attributes)
+      end
     } if self.respond_to? :children
   end
 
